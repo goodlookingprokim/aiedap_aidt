@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 피드백 보드 - HTHT×SEL 프로젝트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .control-input {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #229954, #1e8449);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            min-height: 600px;
+        }
+
+        .feedback-area {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feedback-input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .input-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-icon {
+            width: 32px;
+            height: 32px;
+            background: #f39c12;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .feedback-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #f39c12;
+            box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .feedback-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .type-option {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .type-option:hover {
+            border-color: #f39c12;
+            transform: translateY(-2px);
+        }
+
+        .type-option.selected {
+            border-color: #f39c12;
+            background: #fef9e7;
+        }
+
+        .type-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .type-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .feedback-list {
+            flex-grow: 1;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .feedback-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feedback-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .feedback-author {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .feedback-time {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .feedback-type-badge {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .type-positive {
+            background: #27ae60;
+        }
+
+        .type-constructive {
+            background: #f39c12;
+        }
+
+        .type-question {
+            background: #3498db;
+        }
+
+        .type-suggestion {
+            background: #9b59b6;
+        }
+
+        .feedback-target {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .feedback-content {
+            color: #2c3e50;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .feedback-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .like-btn {
+            background: #ecf0f1;
+            color: #7f8c8d;
+        }
+
+        .like-btn.liked {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .reply-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .reply-btn:hover {
+            background: #2980b9;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            border-left: 1px solid #dee2e6;
+            padding: 30px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-icon {
+            width: 24px;
+            height: 24px;
+            background: #f39c12;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #f39c12;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .team-list {
+            list-style: none;
+        }
+
+        .team-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .team-item:hover {
+            background: white;
+        }
+
+        .team-item.selected {
+            background: #fef9e7;
+            border: 1px solid #f39c12;
+        }
+
+        .team-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f39c12;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .team-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .filter-btn:hover {
+            border-color: #f39c12;
+        }
+
+        .filter-btn.active {
+            background: #f39c12;
+            color: white;
+            border-color: #f39c12;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .close-btn:hover {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                border-left: none;
+                border-top: 1px solid #dee2e6;
+            }
+            
+            .feedback-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .control-group {
+                justify-content: space-between;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #27ae60;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        .notification.info {
+            background: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>실시간 피드백 보드</h1>
+            <p>모둠별 프로젝트에 대한 실시간 피드백을 주고받으며 함께 성장하세요</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <span class="control-label">참여자 이름:</span>
+                <input type="text" class="control-input" id="userName" placeholder="이름을 입력하세요">
+            </div>
+            <div class="control-group">
+                <span class="control-label">현재 모둠:</span>
+                <select class="control-input" id="currentTeam">
+                    <option value="">모둠 선택</option>
+                    <option value="team1">1모둠 - AI 챗봇팀</option>
+                    <option value="team2">2모둠 - 데이터 분석팀</option>
+                    <option value="team3">3모둠 - 감정 인식팀</option>
+                    <option value="team4">4모둠 - 소통 개선팀</option>
+                    <option value="team5">5모둠 - 학습 도우미팀</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <button class="btn btn-secondary" onclick="clearAll()">전체 초기화</button>
+                <button class="btn btn-success" onclick="exportFeedback()">피드백 내보내기</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="feedback-area">
+                <div class="feedback-input-section">
+                    <div class="input-title">
+                        <div class="input-icon">✏️</div>
+                        피드백 작성하기
+                    </div>
+
+                    <div class="feedback-type-selector">
+                        <div class="type-option selected" onclick="selectFeedbackType(this, 'positive')">
+                            <span class="type-icon">👍</span>
+                            <div class="type-label">칭찬</div>
+                        </div>
+                        <div class="type-option" onclick="selectFeedbackType(this, 'constructive')">
+                            <span class="type-icon">💡</span>
+                            <div class="type-label">개선 제안</div>
+                        </div>
+                        <div class="type-option" onclick="selectFeedbackType(this, 'question')">
+                            <span class="type-icon">❓</span>
+                            <div class="type-label">질문</div>
+                        </div>
+                        <div class="type-option" onclick="selectFeedbackType(this, 'suggestion')">
+                            <span class="type-icon">💭</span>
+                            <div class="type-label">아이디어</div>
+                        </div>
+                    </div>
+
+                    <div class="feedback-form">
+                        <div class="form-group">
+                            <label class="form-label">대상 모둠</label>
+                            <select class="form-select" id="targetTeam">
+                                <option value="">모둠 선택</option>
+                                <option value="team1">1모둠 - AI 챗봇팀</option>
+                                <option value="team2">2모둠 - 데이터 분석팀</option>
+                                <option value="team3">3모둠 - 감정 인식팀</option>
+                                <option value="team4">4모둠 - 소통 개선팀</option>
+                                <option value="team5">5모둠 - 학습 도우미팀</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">SEL 역량 연계</label>
+                            <select class="form-select" id="selCompetency">
+                                <option value="">역량 선택 (선택사항)</option>
+                                <option value="self-awareness">✪ 자기인식</option>
+                                <option value="self-management">♢ 자기관리</option>
+                                <option value="social-awareness">♧ 사회적 인식</option>
+                                <option value="relationship-skills">♤ 관계 기술</option>
+                                <option value="responsible-decision">★ 책임 있는 의사결정</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">피드백 내용</label>
+                        <textarea class="form-textarea" id="feedbackContent" placeholder="구체적이고 건설적인 피드백을 작성해주세요..."></textarea>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="submitFeedback()">피드백 등록</button>
+                    </div>
+                </div>
+
+                <div class="feedback-list" id="feedbackList">
+                    <!-- 피드백 항목들이 여기에 동적으로 추가됩니다 -->
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <div class="sidebar-icon">📊</div>
+                        피드백 통계
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalFeedbacks">0</div>
+                            <div class="stat-label">전체 피드백</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="positiveFeedbacks">0</div>
+                            <div class="stat-label">칭찬</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="constructiveFeedbacks">0</div>
+                            <div class="stat-label">개선 제안</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="questionFeedbacks">0</div>
+                            <div class="stat-label">질문</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <div class="sidebar-icon">👥</div>
+                        모둠 목록
+                    </div>
+                    <ul class="team-list">
+                        <li class="team-item" onclick="filterByTeam('all')">
+                            <div class="team-avatar">전체</div>
+                            <div class="team-name">모든 모둠</div>
+                        </li>
+                        <li class="team-item" onclick="filterByTeam('team1')">
+                            <div class="team-avatar">1</div>
+                            <div class="team-name">AI 챗봇팀</div>
+                        </li>
+                        <li class="team-item" onclick="filterByTeam('team2')">
+                            <div class="team-avatar">2</div>
+                            <div class="team-name">데이터 분석팀</div>
+                        </li>
+                        <li class="team-item" onclick="filterByTeam('team3')">
+                            <div class="team-avatar">3</div>
+                            <div class="team-name">감정 인식팀</div>
+                        </li>
+                        <li class="team-item" onclick="filterByTeam('team4')">
+                            <div class="team-avatar">4</div>
+                            <div class="team-name">소통 개선팀</div>
+                        </li>
+                        <li class="team-item" onclick="filterByTeam('team5')">
+                            <div class="team-avatar">5</div>
+                            <div class="team-name">학습 도우미팀</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <div class="sidebar-icon">🔍</div>
+                        필터
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" onclick="filterByType('all')">전체 보기</button>
+                        <button class="filter-btn" onclick="filterByType('positive')">👍 칭찬만</button>
+                        <button class="filter-btn" onclick="filterByType('constructive')">💡 개선 제안만</button>
+                        <button class="filter-btn" onclick="filterByType('question')">❓ 질문만</button>
+                        <button class="filter-btn" onclick="filterByType('suggestion')">💭 아이디어만</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 답글 모달 -->
+    <div class="modal" id="replyModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #f39c12;">답글 작성</h2>
+                <p style="color: #7f8c8d;">피드백에 대한 답글을 작성해주세요</p>
+            </div>
+            <div id="originalFeedback" style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <!-- 원본 피드백이 여기에 표시됩니다 -->
+            </div>
+            <div class="form-group">
+                <label class="form-label">답글 내용</label>
+                <textarea class="form-textarea" id="replyContent" placeholder="답글을 작성해주세요..." style="height: 100px;"></textarea>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="closeModal()">취소</button>
+                <button class="btn btn-primary" onclick="submitReply()">답글 등록</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 알림 -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let feedbacks = [];
+        let currentFilter = { type: 'all', team: 'all' };
+        let selectedFeedbackType = 'positive';
+        let replyingToId = null;
+
+        const teamNames = {
+            'team1': '1모둠 - AI 챗봇팀',
+            'team2': '2모둠 - 데이터 분석팀',
+            'team3': '3모둠 - 감정 인식팀',
+            'team4': '4모둠 - 소통 개선팀',
+            'team5': '5모둠 - 학습 도우미팀'
+        };
+
+        const selNames = {
+            'self-awareness': '✪ 자기인식',
+            'self-management': '♢ 자기관리',
+            'social-awareness': '♧ 사회적 인식',
+            'relationship-skills': '♤ 관계 기술',
+            'responsible-decision': '★ 책임 있는 의사결정'
+        };
+
+        // 피드백 타입 선택
+        function selectFeedbackType(element, type) {
+            document.querySelectorAll('.type-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedFeedbackType = type;
+        }
+
+        // 피드백 제출
+        function submitFeedback() {
+            const userName = document.getElementById('userName').value.trim();
+            const targetTeam = document.getElementById('targetTeam').value;
+            const selCompetency = document.getElementById('selCompetency').value;
+            const content = document.getElementById('feedbackContent').value.trim();
+
+            if (!userName) {
+                showNotification('참여자 이름을 입력해주세요.', 'error');
+                return;
+            }
+
+            if (!targetTeam) {
+                showNotification('대상 모둠을 선택해주세요.', 'error');
+                return;
+            }
+
+            if (!content) {
+                showNotification('피드백 내용을 작성해주세요.', 'error');
+                return;
+            }
+
+            const feedback = {
+                id: Date.now(),
+                author: userName,
+                targetTeam: targetTeam,
+                type: selectedFeedbackType,
+                selCompetency: selCompetency,
+                content: content,
+                timestamp: new Date(),
+                likes: 0,
+                liked: false,
+                replies: []
+            };
+
+            feedbacks.unshift(feedback);
+            
+            // 입력 필드 초기화
+            document.getElementById('feedbackContent').value = '';
+            document.getElementById('selCompetency').value = '';
+            
+            renderFeedbacks();
+            updateStats();
+            saveFeedbacks();
+            
+            showNotification('피드백이 등록되었습니다!', 'success');
+        }
+
+        // 피드백 렌더링
+        function renderFeedbacks() {
+            const feedbackList = document.getElementById('feedbackList');
+            const filteredFeedbacks = feedbacks.filter(feedback => {
+                const typeMatch = currentFilter.type === 'all' || feedback.type === currentFilter.type;
+                const teamMatch = currentFilter.team === 'all' || feedback.targetTeam === currentFilter.team;
+                return typeMatch && teamMatch;
+            });
+
+            if (filteredFeedbacks.length === 0) {
+                feedbackList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">💬</div>
+                        <p>아직 피드백이 없습니다.</p>
+                        <p>첫 번째 피드백을 작성해보세요!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            feedbackList.innerHTML = filteredFeedbacks.map(feedback => {
+                const typeIcons = {
+                    'positive': '👍',
+                    'constructive': '💡',
+                    'question': '❓',
+                    'suggestion': '💭'
+                };
+
+                const typeLabels = {
+                    'positive': '칭찬',
+                    'constructive': '개선 제안',
+                    'question': '질문',
+                    'suggestion': '아이디어'
+                };
+
+                const repliesHtml = feedback.replies.map(reply => `
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 10px; border-left: 3px solid #f39c12;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <strong style="color: #2c3e50;">${reply.author}</strong>
+                            <span style="font-size: 0.8rem; color: #7f8c8d;">${formatTime(reply.timestamp)}</span>
+                        </div>
+                        <div style="color: #2c3e50;">${reply.content}</div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="feedback-item">
+                        <div class="feedback-header">
+                            <div>
+                                <span class="feedback-author">${feedback.author}</span>
+                                <span class="feedback-type-badge type-${feedback.type}">
+                                    ${typeIcons[feedback.type]} ${typeLabels[feedback.type]}
+                                </span>
+                            </div>
+                            <span class="feedback-time">${formatTime(feedback.timestamp)}</span>
+                        </div>
+                        <div class="feedback-target">
+                            📍 ${teamNames[feedback.targetTeam]}
+                            ${feedback.selCompetency ? ` • ${selNames[feedback.selCompetency]}` : ''}
+                        </div>
+                        <div class="feedback-content">${feedback.content}</div>
+                        <div class="feedback-actions">
+                            <button class="action-btn like-btn ${feedback.liked ? 'liked' : ''}" onclick="toggleLike(${feedback.id})">
+                                ❤️ ${feedback.likes}
+                            </button>
+                            <button class="action-btn reply-btn" onclick="openReplyModal(${feedback.id})">
+                                💬 답글
+                            </button>
+                        </div>
+                        ${repliesHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 좋아요 토글
+        function toggleLike(feedbackId) {
+            const feedback = feedbacks.find(f => f.id === feedbackId);
+            if (feedback) {
+                if (feedback.liked) {
+                    feedback.likes--;
+                    feedback.liked = false;
+                } else {
+                    feedback.likes++;
+                    feedback.liked = true;
+                }
+                renderFeedbacks();
+                saveFeedbacks();
+            }
+        }
+
+        // 답글 모달 열기
+        function openReplyModal(feedbackId) {
+            const feedback = feedbacks.find(f => f.id === feedbackId);
+            if (feedback) {
+                replyingToId = feedbackId;
+                
+                const typeIcons = {
+                    'positive': '👍',
+                    'constructive': '💡',
+                    'question': '❓',
+                    'suggestion': '💭'
+                };
+
+                const typeLabels = {
+                    'positive': '칭찬',
+                    'constructive': '개선 제안',
+                    'question': '질문',
+                    'suggestion': '아이디어'
+                };
+
+                document.getElementById('originalFeedback').innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <strong>${feedback.author}</strong>
+                        <span class="feedback-type-badge type-${feedback.type}">
+                            ${typeIcons[feedback.type]} ${typeLabels[feedback.type]}
+                        </span>
+                    </div>
+                    <div style="color: #7f8c8d; margin-bottom: 10px;">
+                        📍 ${teamNames[feedback.targetTeam]}
+                    </div>
+                    <div>${feedback.content}</div>
+                `;
+                
+                document.getElementById('replyContent').value = '';
+                document.getElementById('replyModal').style.display = 'block';
+            }
+        }
+
+        // 답글 제출
+        function submitReply() {
+            const userName = document.getElementById('userName').value.trim();
+            const replyContent = document.getElementById('replyContent').value.trim();
+
+            if (!userName) {
+                showNotification('참여자 이름을 입력해주세요.', 'error');
+                return;
+            }
+
+            if (!replyContent) {
+                showNotification('답글 내용을 작성해주세요.', 'error');
+                return;
+            }
+
+            const feedback = feedbacks.find(f => f.id === replyingToId);
+            if (feedback) {
+                const reply = {
+                    id: Date.now(),
+                    author: userName,
+                    content: replyContent,
+                    timestamp: new Date()
+                };
+
+                feedback.replies.push(reply);
+                renderFeedbacks();
+                saveFeedbacks();
+                closeModal();
+                
+                showNotification('답글이 등록되었습니다!', 'success');
+            }
+        }
+
+        // 타입별 필터링
+        function filterByType(type) {
+            currentFilter.type = type;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderFeedbacks();
+        }
+
+        // 팀별 필터링
+        function filterByTeam(team) {
+            currentFilter.team = team;
+            
+            document.querySelectorAll('.team-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            renderFeedbacks();
+        }
+
+        // 통계 업데이트
+        function updateStats() {
+            const total = feedbacks.length;
+            const positive = feedbacks.filter(f => f.type === 'positive').length;
+            const constructive = feedbacks.filter(f => f.type === 'constructive').length;
+            const question = feedbacks.filter(f => f.type === 'question').length;
+
+            document.getElementById('totalFeedbacks').textContent = total;
+            document.getElementById('positiveFeedbacks').textContent = positive;
+            document.getElementById('constructiveFeedbacks').textContent = constructive;
+            document.getElementById('questionFeedbacks').textContent = question;
+        }
+
+        // 시간 포맷팅
+        function formatTime(timestamp) {
+            const now = new Date();
+            const time = new Date(timestamp);
+            const diff = now - time;
+            
+            if (diff < 60000) { // 1분 미만
+                return '방금 전';
+            } else if (diff < 3600000) { // 1시간 미만
+                return Math.floor(diff / 60000) + '분 전';
+            } else if (diff < 86400000) { // 1일 미만
+                return Math.floor(diff / 3600000) + '시간 전';
+            } else {
+                return time.toLocaleDateString('ko-KR');
+            }
+        }
+
+        // 알림 표시
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // 전체 초기화
+        function clearAll() {
+            if (confirm('모든 피드백을 삭제하시겠습니까?')) {
+                feedbacks = [];
+                renderFeedbacks();
+                updateStats();
+                saveFeedbacks();
+                showNotification('모든 피드백이 삭제되었습니다.', 'info');
+            }
+        }
+
+        // 피드백 내보내기
+        function exportFeedback() {
+            if (feedbacks.length === 0) {
+                showNotification('내보낼 피드백이 없습니다.', 'error');
+                return;
+            }
+
+            let content = 'HTHT×SEL 프로젝트 - 실시간 피드백 보드\n';
+            content += '=' + '='.repeat(50) + '\n\n';
+
+            const typeLabels = {
+                'positive': '칭찬',
+                'constructive': '개선 제안',
+                'question': '질문',
+                'suggestion': '아이디어'
+            };
+
+            feedbacks.forEach((feedback, index) => {
+                content += `${index + 1}. [${typeLabels[feedback.type]}] ${feedback.author} → ${teamNames[feedback.targetTeam]}\n`;
+                content += `시간: ${feedback.timestamp.toLocaleString('ko-KR')}\n`;
+                if (feedback.selCompetency) {
+                    content += `SEL 역량: ${selNames[feedback.selCompetency]}\n`;
+                }
+                content += `내용: ${feedback.content}\n`;
+                content += `좋아요: ${feedback.likes}개\n`;
+                
+                if (feedback.replies.length > 0) {
+                    content += `답글 (${feedback.replies.length}개):\n`;
+                    feedback.replies.forEach((reply, replyIndex) => {
+                        content += `  ${replyIndex + 1}) ${reply.author}: ${reply.content}\n`;
+                    });
+                }
+                content += '\n' + '-'.repeat(50) + '\n\n';
+            });
+
+            content += `\n총 피드백 수: ${feedbacks.length}개\n`;
+            content += `내보내기 일시: ${new Date().toLocaleString('ko-KR')}\n`;
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '피드백보드_' + new Date().toISOString().slice(0,10) + '.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showNotification('피드백이 내보내기 되었습니다!', 'success');
+        }
+
+        // 피드백 저장
+        function saveFeedbacks() {
+            localStorage.setItem('feedbackBoardData', JSON.stringify(feedbacks));
+        }
+
+        // 피드백 불러오기
+        function loadFeedbacks() {
+            const saved = localStorage.getItem('feedbackBoardData');
+            if (saved) {
+                feedbacks = JSON.parse(saved).map(feedback => ({
+                    ...feedback,
+                    timestamp: new Date(feedback.timestamp),
+                    replies: feedback.replies.map(reply => ({
+                        ...reply,
+                        timestamp: new Date(reply.timestamp)
+                    }))
+                }));
+                renderFeedbacks();
+                updateStats();
+            }
+        }
+
+        // 모달 닫기
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+            replyingToId = null;
+        }
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFeedbacks();
+            
+            // 모달 외부 클릭 시 닫기
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+            });
+
+            // 샘플 데이터 추가 (처음 사용시)
+            if (feedbacks.length === 0) {
+                const sampleFeedbacks = [
+                    {
+                        id: Date.now() - 1000,
+                        author: '김선생',
+                        targetTeam: 'team1',
+                        type: 'positive',
+                        selCompetency: 'relationship-skills',
+                        content: '1모둠의 AI 챗봇 아이디어가 정말 창의적이네요! 특히 감정을 인식하는 기능이 인상적입니다.',
+                        timestamp: new Date(Date.now() - 3600000),
+                        likes: 3,
+                        liked: false,
+                        replies: []
+                    },
+                    {
+                        id: Date.now() - 2000,
+                        author: '이학생',
+                        targetTeam: 'team2',
+                        type: 'question',
+                        selCompetency: 'self-awareness',
+                        content: '2모둠의 데이터 분석 결과가 흥미로운데, 어떤 방법으로 데이터를 수집하셨나요?',
+                        timestamp: new Date(Date.now() - 7200000),
+                        likes: 1,
+                        liked: false,
+                        replies: [
+                            {
+                                id: Date.now() - 1500,
+                                author: '박학생',
+                                content: '설문조사와 학습 로그 데이터를 활용했습니다. 자세한 내용은 발표에서 설명드릴게요!',
+                                timestamp: new Date(Date.now() - 3000000)
+                            }
+                        ]
+                    }
+                ];
+                
+                feedbacks = sampleFeedbacks;
+                renderFeedbacks();
+                updateStats();
+                saveFeedbacks();
+            }
+        });
+    </script>
+</body>
+</html>
+

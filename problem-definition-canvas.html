@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문제 정의 캔버스 - HTHT×SEL 프로젝트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .canvas-container {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 20px;
+            min-height: 600px;
+        }
+
+        .canvas-section {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .canvas-section:hover {
+            border-color: #3498db;
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .canvas-section.large {
+            grid-column: span 2;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            background: #3498db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .input-area {
+            width: 100%;
+            min-height: 100px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+            background: white;
+        }
+
+        .input-area:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .tag.selected {
+            background: #e74c3c;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #1f5f8b);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #229954, #1e8449);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #ecf0f1;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .close-btn:hover {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .canvas-container {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .canvas-section.large {
+                grid-column: span 1;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        .floating-help {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #3498db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .floating-help:hover {
+            transform: scale(1.1);
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>문제 정의 캔버스</h1>
+            <p>학급 문제를 체계적으로 분석하고 AIDT 기반 HTHT 프로젝트를 설계해보세요</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <div class="canvas-section">
+                <div class="section-title">
+                    <div class="section-icon">1</div>
+                    문제 상황
+                </div>
+                <textarea class="input-area" id="problemSituation" placeholder="현재 학급에서 발생하고 있는 문제 상황을 구체적으로 작성해주세요.&#10;&#10;예시: 학급 내 소극적인 학생들의 의견이 반영되지 않고, 온라인 소통 시 감정 전달이 어려워 오해가 발생합니다."></textarea>
+                <div class="help-text">구체적이고 관찰 가능한 상황을 중심으로 작성하세요.</div>
+            </div>
+
+            <div class="canvas-section">
+                <div class="section-title">
+                    <div class="section-icon">2</div>
+                    영향받는 대상
+                </div>
+                <textarea class="input-area" id="affectedTargets" placeholder="이 문제로 인해 영향을 받는 학생들이나 그룹을 명시해주세요.&#10;&#10;예시: 소극적인 성격의 학생들, 온라인 소통에 어려움을 겪는 학생들, 학급 전체의 협력 분위기"></textarea>
+                <div class="help-text">직접적/간접적으로 영향받는 모든 대상을 포함하세요.</div>
+            </div>
+
+            <div class="canvas-section">
+                <div class="section-title">
+                    <div class="section-icon">3</div>
+                    문제의 원인
+                </div>
+                <textarea class="input-area" id="problemCauses" placeholder="문제가 발생하는 근본적인 원인을 분석해주세요.&#10;&#10;예시: 대면 소통 기회 부족, 감정 표현 어휘의 한계, 디지털 소통 도구의 제한적 활용"></textarea>
+                <div class="help-text">표면적 원인과 근본적 원인을 구분하여 작성하세요.</div>
+            </div>
+
+            <div class="canvas-section">
+                <div class="section-title">
+                    <div class="section-icon">4</div>
+                    현재 시도한 해결책
+                </div>
+                <textarea class="input-area" id="currentSolutions" placeholder="이미 시도해본 해결 방법과 그 결과를 작성해주세요.&#10;&#10;예시: 모둠 토의 시간 확대 → 일부 효과 있으나 온라인에서는 여전히 한계"></textarea>
+                <div class="help-text">효과가 있었던 것과 없었던 것을 구분하여 작성하세요.</div>
+            </div>
+
+            <div class="canvas-section large">
+                <div class="section-title">
+                    <div class="section-icon">5</div>
+                    AIDT 도구 매핑
+                </div>
+                <textarea class="input-area" id="aidtMapping" placeholder="이 문제 해결에 활용할 수 있는 AI 디지털 도구들을 나열하고, 각각의 활용 방안을 작성해주세요.&#10;&#10;예시:&#10;• ChatGPT: 감정 표현 어휘 확장 및 소통 스크립트 생성&#10;• 감정 분석 AI: 학급 내 감정 상태 모니터링&#10;• 협업 도구: 익명 의견 수렴 및 피드백 시스템"></textarea>
+                <div class="tag-container">
+                    <div class="tag" onclick="toggleTag(this)">ChatGPT</div>
+                    <div class="tag" onclick="toggleTag(this)">Claude</div>
+                    <div class="tag" onclick="toggleTag(this)">Midjourney</div>
+                    <div class="tag" onclick="toggleTag(this)">Canva AI</div>
+                    <div class="tag" onclick="toggleTag(this)">Notion AI</div>
+                    <div class="tag" onclick="toggleTag(this)">Padlet</div>
+                    <div class="tag" onclick="toggleTag(this)">Mentimeter</div>
+                    <div class="tag" onclick="toggleTag(this)">Flipgrid</div>
+                </div>
+                <div class="help-text">위 태그를 클릭하여 선택하거나 직접 입력하세요. 각 도구의 구체적 활용 방안을 포함해주세요.</div>
+            </div>
+
+            <div class="canvas-section">
+                <div class="section-title">
+                    <div class="section-icon">6</div>
+                    성공 지표
+                </div>
+                <textarea class="input-area" id="successMetrics" placeholder="프로젝트 성공을 측정할 수 있는 구체적인 지표를 작성해주세요.&#10;&#10;예시:&#10;• 소극적 학생들의 발언 횟수 20% 증가&#10;• 온라인 소통 만족도 4점 이상&#10;• 학급 내 갈등 상황 50% 감소"></textarea>
+                <div class="help-text">정량적, 정성적 지표를 모두 포함하여 작성하세요.</div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-secondary" onclick="clearAll()">초기화</button>
+            <button class="btn btn-primary" onclick="saveCanvas()">임시 저장</button>
+            <button class="btn btn-success" onclick="exportCanvas()">완성 및 내보내기</button>
+        </div>
+    </div>
+
+    <div class="floating-help" onclick="showHelp()">?</div>
+
+    <!-- 도움말 모달 -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div class="modal-header">
+                <h2>문제 정의 캔버스 사용 가이드</h2>
+                <p>효과적인 문제 정의를 위한 단계별 안내</p>
+            </div>
+            <div class="modal-body">
+                <h3>1. 문제 상황</h3>
+                <p>• 관찰 가능하고 구체적인 상황을 작성하세요</p>
+                <p>• "학생들이 참여하지 않는다" → "발표 시간에 5명 이하만 손을 든다"</p>
+                
+                <h3>2. 영향받는 대상</h3>
+                <p>• 직접적 영향: 문제의 당사자</p>
+                <p>• 간접적 영향: 학급 분위기, 학습 환경 등</p>
+                
+                <h3>3. 문제의 원인</h3>
+                <p>• 5Why 기법 활용: "왜?"를 5번 반복하여 근본 원인 찾기</p>
+                <p>• 개인적 요인과 환경적 요인을 구분하여 분석</p>
+                
+                <h3>4. AIDT 도구 선정 기준</h3>
+                <p>• 학생 수준에 적합한 도구 선택</p>
+                <p>• 교육적 목표와의 연계성 고려</p>
+                <p>• 접근성과 사용 편의성 확인</p>
+                
+                <h3>5. 성공 지표 설정</h3>
+                <p>• SMART 기준: 구체적, 측정가능, 달성가능, 관련성, 시한성</p>
+                <p>• 정량적 지표와 정성적 지표의 균형</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 결과 모달 -->
+    <div class="modal" id="resultModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div class="modal-header">
+                <h2>문제 정의 캔버스 완성</h2>
+                <p>작성하신 내용을 확인하고 다운로드하세요</p>
+            </div>
+            <div class="modal-body" id="resultContent">
+                <!-- 결과 내용이 여기에 표시됩니다 -->
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="downloadResult()">PDF 다운로드</button>
+                <button class="btn btn-secondary" onclick="copyToClipboard()">클립보드 복사</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 진행률 업데이트
+        function updateProgress() {
+            const inputs = document.querySelectorAll('.input-area');
+            let filledCount = 0;
+            
+            inputs.forEach(input => {
+                if (input.value.trim().length > 10) {
+                    filledCount++;
+                }
+            });
+            
+            const progress = (filledCount / inputs.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // 태그 토글
+        function toggleTag(tag) {
+            tag.classList.toggle('selected');
+            updateAIDTMapping();
+        }
+
+        // AIDT 매핑 업데이트
+        function updateAIDTMapping() {
+            const selectedTags = document.querySelectorAll('.tag.selected');
+            const aidtTextarea = document.getElementById('aidtMapping');
+            let currentText = aidtTextarea.value;
+            
+            selectedTags.forEach(tag => {
+                const toolName = tag.textContent;
+                if (!currentText.includes(toolName)) {
+                    currentText += `\n• ${toolName}: [활용 방안을 작성해주세요]`;
+                }
+            });
+            
+            aidtTextarea.value = currentText;
+        }
+
+        // 모든 입력 필드 초기화
+        function clearAll() {
+            if (confirm('모든 내용을 초기화하시겠습니까?')) {
+                document.querySelectorAll('.input-area').forEach(input => {
+                    input.value = '';
+                });
+                document.querySelectorAll('.tag.selected').forEach(tag => {
+                    tag.classList.remove('selected');
+                });
+                updateProgress();
+            }
+        }
+
+        // 임시 저장
+        function saveCanvas() {
+            const data = {};
+            document.querySelectorAll('.input-area').forEach(input => {
+                data[input.id] = input.value;
+            });
+            
+            localStorage.setItem('problemDefinitionCanvas', JSON.stringify(data));
+            alert('임시 저장되었습니다!');
+        }
+
+        // 저장된 데이터 불러오기
+        function loadCanvas() {
+            const saved = localStorage.getItem('problemDefinitionCanvas');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.value = data[key];
+                    }
+                });
+                updateProgress();
+            }
+        }
+
+        // 캔버스 내보내기
+        function exportCanvas() {
+            const inputs = document.querySelectorAll('.input-area');
+            let allFilled = true;
+            
+            inputs.forEach(input => {
+                if (input.value.trim().length < 10) {
+                    allFilled = false;
+                }
+            });
+            
+            if (!allFilled) {
+                alert('모든 항목을 충분히 작성해주세요. (각 항목당 최소 10자 이상)');
+                return;
+            }
+            
+            generateResult();
+            document.getElementById('resultModal').style.display = 'block';
+        }
+
+        // 결과 생성
+        function generateResult() {
+            const sections = [
+                { id: 'problemSituation', title: '1. 문제 상황' },
+                { id: 'affectedTargets', title: '2. 영향받는 대상' },
+                { id: 'problemCauses', title: '3. 문제의 원인' },
+                { id: 'currentSolutions', title: '4. 현재 시도한 해결책' },
+                { id: 'aidtMapping', title: '5. AIDT 도구 매핑' },
+                { id: 'successMetrics', title: '6. 성공 지표' }
+            ];
+            
+            let resultHTML = '<div style="text-align: left;">';
+            resultHTML += '<h2 style="color: #3498db; margin-bottom: 20px;">문제 정의 캔버스 결과</h2>';
+            
+            sections.forEach(section => {
+                const content = document.getElementById(section.id).value;
+                resultHTML += `<h3 style="color: #2c3e50; margin: 20px 0 10px 0;">${section.title}</h3>`;
+                resultHTML += `<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; white-space: pre-wrap;">${content}</div>`;
+            });
+            
+            resultHTML += '<p style="text-align: center; margin-top: 30px; color: #7f8c8d; font-style: italic;">HTHT×SEL 프로젝트 문제 정의 캔버스</p>';
+            resultHTML += '</div>';
+            
+            document.getElementById('resultContent').innerHTML = resultHTML;
+        }
+
+        // PDF 다운로드 (간단한 텍스트 파일로 대체)
+        function downloadResult() {
+            const sections = [
+                { id: 'problemSituation', title: '1. 문제 상황' },
+                { id: 'affectedTargets', title: '2. 영향받는 대상' },
+                { id: 'problemCauses', title: '3. 문제의 원인' },
+                { id: 'currentSolutions', title: '4. 현재 시도한 해결책' },
+                { id: 'aidtMapping', title: '5. AIDT 도구 매핑' },
+                { id: 'successMetrics', title: '6. 성공 지표' }
+            ];
+            
+            let content = 'HTHT×SEL 프로젝트 - 문제 정의 캔버스\n';
+            content += '=' + '='.repeat(50) + '\n\n';
+            
+            sections.forEach(section => {
+                const sectionContent = document.getElementById(section.id).value;
+                content += `${section.title}\n`;
+                content += '-'.repeat(30) + '\n';
+                content += `${sectionContent}\n\n`;
+            });
+            
+            content += `\n작성일: ${new Date().toLocaleDateString('ko-KR')}\n`;
+            
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '문제정의캔버스_' + new Date().toISOString().slice(0,10) + '.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 클립보드 복사
+        function copyToClipboard() {
+            const resultText = document.getElementById('resultContent').innerText;
+            navigator.clipboard.writeText(resultText).then(() => {
+                alert('클립보드에 복사되었습니다!');
+            });
+        }
+
+        // 도움말 표시
+        function showHelp() {
+            document.getElementById('helpModal').style.display = 'block';
+        }
+
+        // 모달 닫기
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        // 이벤트 리스너
+        document.addEventListener('DOMContentLoaded', function() {
+            // 저장된 데이터 불러오기
+            loadCanvas();
+            
+            // 입력 필드 변경 시 진행률 업데이트
+            document.querySelectorAll('.input-area').forEach(input => {
+                input.addEventListener('input', updateProgress);
+            });
+            
+            // 모달 외부 클릭 시 닫기
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+            });
+            
+            // 초기 진행률 설정
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
+

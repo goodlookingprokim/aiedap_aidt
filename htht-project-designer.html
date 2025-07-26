@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTHT 프로젝트 설계 도구 - HTHT×SEL 프로젝트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+        }
+
+        .tab.active {
+            background: white;
+            border-bottom-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 40px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .matrix-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .matrix-cell {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .matrix-cell:hover {
+            border-color: #e74c3c;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.15);
+        }
+
+        .matrix-cell.selected {
+            background: #e74c3c;
+            color: white;
+            border-color: #c0392b;
+        }
+
+        .matrix-cell h3 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .matrix-cell p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .tech-touch-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 5px 2px;
+        }
+
+        .tech {
+            background: #3498db;
+            color: white;
+        }
+
+        .touch {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .sel-icons {
+            margin-top: 10px;
+        }
+
+        .sel-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #27ae60;
+            color: white;
+            text-align: center;
+            line-height: 24px;
+            margin: 2px;
+            font-size: 12px;
+        }
+
+        .flowchart-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .flowchart-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .flowchart-step:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #e74c3c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .step-description {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .step-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .sel-balance-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .sel-competency {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .sel-competency.active {
+            border-color: #27ae60;
+            background: #d5f5e3;
+        }
+
+        .competency-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #27ae60;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 15px;
+        }
+
+        .competency-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .competency-count {
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px auto;
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #229954, #1e8449);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .progress-step {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #dee2e6;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.completed {
+            background: #27ae60;
+        }
+
+        .progress-step.current {
+            background: #e74c3c;
+            transform: scale(1.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .close-btn:hover {
+            color: #e74c3c;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .matrix-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .sel-balance-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .flowchart-step {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .step-number {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HTHT 프로젝트 설계 도구</h1>
+            <p>4단계 플로차트와 SEL 역량 매핑을 통한 체계적 프로젝트 설계</p>
+            <div class="progress-indicator">
+                <div class="progress-step current" id="step1"></div>
+                <div class="progress-step" id="step2"></div>
+                <div class="progress-step" id="step3"></div>
+                <div class="progress-step" id="step4"></div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('matrix')">
+                <h3>1. HTHT 매트릭스</h3>
+                <p>활동 선택 및 분류</p>
+            </div>
+            <div class="tab" onclick="switchTab('flowchart')">
+                <h3>2. 4단계 플로차트</h3>
+                <p>프로젝트 흐름 설계</p>
+            </div>
+            <div class="tab" onclick="switchTab('sel-balance')">
+                <h3>3. SEL 균형 점검</h3>
+                <p>역량 분포 분석</p>
+            </div>
+            <div class="tab" onclick="switchTab('export')">
+                <h3>4. 결과 내보내기</h3>
+                <p>설계안 완성</p>
+            </div>
+        </div>
+
+        <!-- HTHT 매트릭스 탭 -->
+        <div class="tab-content active" id="matrix">
+            <h2 style="margin-bottom: 30px; color: #2c3e50;">HTHT 활동 매트릭스</h2>
+            <p style="margin-bottom: 30px; color: #7f8c8d;">프로젝트에 포함할 활동을 선택하세요. High-Tech와 High-Touch 활동의 균형을 고려해주세요.</p>
+            
+            <div class="matrix-container">
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="tech" data-sel="자기인식,자기관리">
+                    <h3>AI 챗봇 개발</h3>
+                    <div class="tech-touch-indicator tech">High-Tech</div>
+                    <p>학급 문제 해결을 위한 AI 챗봇 설계 및 구현</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">✪</span>
+                        <span class="sel-icon">♢</span>
+                    </div>
+                </div>
+
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="tech" data-sel="자기인식,책임의사결정">
+                    <h3>데이터 시각화</h3>
+                    <div class="tech-touch-indicator tech">High-Tech</div>
+                    <p>학급 데이터 분석 및 시각적 표현</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">✪</span>
+                        <span class="sel-icon">★</span>
+                    </div>
+                </div>
+
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="tech" data-sel="자기인식,창의성">
+                    <h3>AI 이미지 생성</h3>
+                    <div class="tech-touch-indicator tech">High-Tech</div>
+                    <p>창의적 문제 해결을 위한 AI 이미지 활용</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">✪</span>
+                        <span class="sel-icon">★</span>
+                    </div>
+                </div>
+
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="both" data-sel="책임의사결정,사회적인식">
+                    <h3>AI 윤리 토론</h3>
+                    <div class="tech-touch-indicator tech">High-Tech</div>
+                    <div class="tech-touch-indicator touch">High-Touch</div>
+                    <p>AI 기술 활용의 윤리적 측면 토론</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">★</span>
+                        <span class="sel-icon">♧</span>
+                    </div>
+                </div>
+
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="touch" data-sel="사회적인식,관계기술">
+                    <h3>또래 피드백</h3>
+                    <div class="tech-touch-indicator touch">High-Touch</div>
+                    <p>동료 간 건설적 피드백 주고받기</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">♧</span>
+                        <span class="sel-icon">♤</span>
+                    </div>
+                </div>
+
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="touch" data-sel="자기인식,자기관리">
+                    <h3>감정 일기</h3>
+                    <div class="tech-touch-indicator touch">High-Touch</div>
+                    <p>프로젝트 과정에서의 감정 변화 기록</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">✪</span>
+                        <span class="sel-icon">♢</span>
+                    </div>
+                </div>
+
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="touch" data-sel="사회적인식,관계기술">
+                    <h3>역할극</h3>
+                    <div class="tech-touch-indicator touch">High-Touch</div>
+                    <p>문제 상황 체험 및 해결 방안 탐색</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">♧</span>
+                        <span class="sel-icon">♤</span>
+                    </div>
+                </div>
+
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="both" data-sel="관계기술,책임의사결정">
+                    <h3>협업 프로젝트</h3>
+                    <div class="tech-touch-indicator tech">High-Tech</div>
+                    <div class="tech-touch-indicator touch">High-Touch</div>
+                    <p>디지털 도구를 활용한 팀 프로젝트</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">♤</span>
+                        <span class="sel-icon">★</span>
+                    </div>
+                </div>
+
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="touch" data-sel="자기관리,책임의사결정">
+                    <h3>목표 설정</h3>
+                    <div class="tech-touch-indicator touch">High-Touch</div>
+                    <p>개인 및 팀 목표 설정과 성찰</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">♢</span>
+                        <span class="sel-icon">★</span>
+                    </div>
+                </div>
+
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="tech" data-sel="자기관리,사회적인식">
+                    <h3>학습 분석</h3>
+                    <div class="tech-touch-indicator tech">High-Tech</div>
+                    <p>개인 학습 패턴 분석 및 개선</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">♢</span>
+                        <span class="sel-icon">♧</span>
+                    </div>
+                </div>
+
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="touch" data-sel="사회적인식,관계기술">
+                    <h3>공감 서클</h3>
+                    <div class="tech-touch-indicator touch">High-Touch</div>
+                    <p>타인의 관점 이해 및 공감 능력 향상</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">♧</span>
+                        <span class="sel-icon">♤</span>
+                    </div>
+                </div>
+
+                <div class="matrix-cell" onclick="toggleActivity(this)" data-type="both" data-sel="자기인식,관계기술">
+                    <h3>디지털 스토리텔링</h3>
+                    <div class="tech-touch-indicator tech">High-Tech</div>
+                    <div class="tech-touch-indicator touch">High-Touch</div>
+                    <p>개인 경험을 디지털 매체로 표현</p>
+                    <div class="sel-icons">
+                        <span class="sel-icon">✪</span>
+                        <span class="sel-icon">♤</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <p id="selectionSummary" style="color: #7f8c8d; margin-bottom: 20px;">선택된 활동: 0개 (Tech: 0, Touch: 0)</p>
+                <button class="btn btn-primary" onclick="nextTab()">다음 단계: 플로차트 설계</button>
+            </div>
+        </div>
+
+        <!-- 4단계 플로차트 탭 -->
+        <div class="tab-content" id="flowchart">
+            <h2 style="margin-bottom: 30px; color: #2c3e50;">4단계 프로젝트 플로차트</h2>
+            <p style="margin-bottom: 30px; color: #7f8c8d;">선택한 활동을 4단계 흐름에 배치하고 구체적인 계획을 수립하세요.</p>
+            
+            <div class="flowchart-container">
+                <div class="flowchart-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">AIDT 사전학습</div>
+                        <div class="step-description">개인별 AI 콘텐츠 학습 및 자기주도적 탐색</div>
+                        <div class="tech-touch-indicator tech">High-Tech</div>
+                        <div class="sel-icons">
+                            <span class="sel-icon">✪</span>
+                            <span class="sel-icon">♢</span>
+                        </div>
+                        <input type="text" class="step-input" placeholder="이 단계에 포함할 활동을 입력하세요..." id="step1-activities">
+                        <textarea class="step-input" placeholder="구체적인 활동 계획을 작성하세요..." id="step1-plan" style="height: 80px; margin-top: 10px;"></textarea>
+                    </div>
+                </div>
+
+                <div class="flowchart-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">팀 협력 활동</div>
+                        <div class="step-description">모둠 토의 및 협력, 아이디어 공유</div>
+                        <div class="tech-touch-indicator touch">High-Touch</div>
+                        <div class="sel-icons">
+                            <span class="sel-icon">♧</span>
+                            <span class="sel-icon">♤</span>
+                        </div>
+                        <input type="text" class="step-input" placeholder="이 단계에 포함할 활동을 입력하세요..." id="step2-activities">
+                        <textarea class="step-input" placeholder="구체적인 활동 계획을 작성하세요..." id="step2-plan" style="height: 80px; margin-top: 10px;"></textarea>
+                    </div>
+                </div>
+
+                <div class="flowchart-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">AIDT 적용</div>
+                        <div class="step-description">AI 도구 활용 문제해결 및 결과물 생성</div>
+                        <div class="tech-touch-indicator tech">High-Tech</div>
+                        <div class="sel-icons">
+                            <span class="sel-icon">★</span>
+                            <span class="sel-icon">♢</span>
+                        </div>
+                        <input type="text" class="step-input" placeholder="이 단계에 포함할 활동을 입력하세요..." id="step3-activities">
+                        <textarea class="step-input" placeholder="구체적인 활동 계획을 작성하세요..." id="step3-plan" style="height: 80px; margin-top: 10px;"></textarea>
+                    </div>
+                </div>
+
+                <div class="flowchart-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">성찰 활동</div>
+                        <div class="step-description">경험 공유 및 피드백, 감정 변화 분석</div>
+                        <div class="tech-touch-indicator touch">High-Touch</div>
+                        <div class="sel-icons">
+                            <span class="sel-icon">✪</span>
+                            <span class="sel-icon">♧</span>
+                        </div>
+                        <input type="text" class="step-input" placeholder="이 단계에 포함할 활동을 입력하세요..." id="step4-activities">
+                        <textarea class="step-input" placeholder="구체적인 활동 계획을 작성하세요..." id="step4-plan" style="height: 80px; margin-top: 10px;"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-secondary" onclick="prevTab()">이전 단계</button>
+                <button class="btn btn-primary" onclick="nextTab()">다음 단계: SEL 균형 점검</button>
+            </div>
+        </div>
+
+        <!-- SEL 균형 점검 탭 -->
+        <div class="tab-content" id="sel-balance">
+            <h2 style="margin-bottom: 30px; color: #2c3e50;">SEL 역량 균형 점검</h2>
+            <p style="margin-bottom: 30px; color: #7f8c8d;">5대 SEL 역량의 분포를 확인하고 균형을 조정하세요.</p>
+            
+            <div class="sel-balance-container">
+                <div class="sel-competency" id="comp-자기인식">
+                    <div class="competency-icon">✪</div>
+                    <div class="competency-title">자기인식</div>
+                    <p style="font-size: 0.9rem; color: #7f8c8d;">감정, 생각, 가치관 인식</p>
+                    <div class="competency-count" id="count-자기인식">0</div>
+                </div>
+
+                <div class="sel-competency" id="comp-자기관리">
+                    <div class="competency-icon">♢</div>
+                    <div class="competency-title">자기관리</div>
+                    <p style="font-size: 0.9rem; color: #7f8c8d;">목표 설정, 감정 조절</p>
+                    <div class="competency-count" id="count-자기관리">0</div>
+                </div>
+
+                <div class="sel-competency" id="comp-사회적인식">
+                    <div class="competency-icon">♧</div>
+                    <div class="competency-title">사회적 인식</div>
+                    <p style="font-size: 0.9rem; color: #7f8c8d;">타인 이해, 공감 능력</p>
+                    <div class="competency-count" id="count-사회적인식">0</div>
+                </div>
+
+                <div class="sel-competency" id="comp-관계기술">
+                    <div class="competency-icon">♤</div>
+                    <div class="competency-title">관계 기술</div>
+                    <p style="font-size: 0.9rem; color: #7f8c8d;">의사소통, 협력, 갈등 해결</p>
+                    <div class="competency-count" id="count-관계기술">0</div>
+                </div>
+
+                <div class="sel-competency" id="comp-책임의사결정">
+                    <div class="competency-icon">★</div>
+                    <div class="competency-title">책임 있는 의사결정</div>
+                    <p style="font-size: 0.9rem; color: #7f8c8d;">윤리적 판단, 건설적 선택</p>
+                    <div class="competency-count" id="count-책임의사결정">0</div>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 30px 0;">
+                <h3 style="color: #2c3e50; margin-bottom: 15px;">균형 분석 결과</h3>
+                <div id="balanceAnalysis" style="color: #7f8c8d;">
+                    활동을 선택하면 SEL 역량 분포가 여기에 표시됩니다.
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-secondary" onclick="prevTab()">이전 단계</button>
+                <button class="btn btn-primary" onclick="nextTab()">다음 단계: 결과 내보내기</button>
+            </div>
+        </div>
+
+        <!-- 결과 내보내기 탭 -->
+        <div class="tab-content" id="export">
+            <h2 style="margin-bottom: 30px; color: #2c3e50;">프로젝트 설계 완성</h2>
+            <p style="margin-bottom: 30px; color: #7f8c8d;">설계한 HTHT 프로젝트의 전체 내용을 확인하고 내보내세요.</p>
+            
+            <div id="projectSummary" style="background: #f8f9fa; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <!-- 프로젝트 요약이 여기에 표시됩니다 -->
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-secondary" onclick="prevTab()">이전 단계</button>
+                <button class="btn btn-success" onclick="exportProject()">프로젝트 내보내기</button>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-secondary" onclick="clearAll()">전체 초기화</button>
+            <button class="btn btn-primary" onclick="saveProject()">임시 저장</button>
+        </div>
+    </div>
+
+    <!-- 결과 모달 -->
+    <div class="modal" id="resultModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #e74c3c;">HTHT 프로젝트 설계 완성</h2>
+                <p style="color: #7f8c8d;">설계하신 프로젝트를 다운로드하거나 공유하세요</p>
+            </div>
+            <div id="exportContent" style="max-height: 400px; overflow-y: auto;">
+                <!-- 내보내기 내용이 여기에 표시됩니다 -->
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" onclick="downloadProject()">프로젝트 다운로드</button>
+                <button class="btn btn-secondary" onclick="copyProject()">클립보드 복사</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedActivities = [];
+        let currentTab = 'matrix';
+        let selCounts = {
+            '자기인식': 0,
+            '자기관리': 0,
+            '사회적인식': 0,
+            '관계기술': 0,
+            '책임의사결정': 0
+        };
+
+        // 탭 전환
+        function switchTab(tabName) {
+            // 모든 탭 비활성화
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // 선택된 탭 활성화
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            currentTab = tabName;
+            updateProgressIndicator();
+            
+            if (tabName === 'sel-balance') {
+                updateSELBalance();
+            } else if (tabName === 'export') {
+                generateProjectSummary();
+            }
+        }
+
+        // 다음 탭으로 이동
+        function nextTab() {
+            const tabs = ['matrix', 'flowchart', 'sel-balance', 'export'];
+            const currentIndex = tabs.indexOf(currentTab);
+            if (currentIndex < tabs.length - 1) {
+                switchTab(tabs[currentIndex + 1]);
+            }
+        }
+
+        // 이전 탭으로 이동
+        function prevTab() {
+            const tabs = ['matrix', 'flowchart', 'sel-balance', 'export'];
+            const currentIndex = tabs.indexOf(currentTab);
+            if (currentIndex > 0) {
+                switchTab(tabs[currentIndex - 1]);
+            }
+        }
+
+        // 진행률 표시기 업데이트
+        function updateProgressIndicator() {
+            const steps = ['matrix', 'flowchart', 'sel-balance', 'export'];
+            const currentIndex = steps.indexOf(currentTab);
+            
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.remove('current', 'completed');
+                if (index < currentIndex) {
+                    step.classList.add('completed');
+                } else if (index === currentIndex) {
+                    step.classList.add('current');
+                }
+            });
+        }
+
+        // 활동 토글
+        function toggleActivity(cell) {
+            const activityName = cell.querySelector('h3').textContent;
+            const selCompetencies = cell.dataset.sel.split(',');
+            
+            if (cell.classList.contains('selected')) {
+                // 선택 해제
+                cell.classList.remove('selected');
+                selectedActivities = selectedActivities.filter(activity => activity.name !== activityName);
+                
+                // SEL 카운트 감소
+                selCompetencies.forEach(comp => {
+                    if (selCounts[comp] > 0) {
+                        selCounts[comp]--;
+                    }
+                });
+            } else {
+                // 선택
+                cell.classList.add('selected');
+                selectedActivities.push({
+                    name: activityName,
+                    type: cell.dataset.type,
+                    sel: selCompetencies,
+                    description: cell.querySelector('p').textContent
+                });
+                
+                // SEL 카운트 증가
+                selCompetencies.forEach(comp => {
+                    selCounts[comp]++;
+                });
+            }
+            
+            updateSelectionSummary();
+        }
+
+        // 선택 요약 업데이트
+        function updateSelectionSummary() {
+            const techCount = selectedActivities.filter(a => a.type === 'tech' || a.type === 'both').length;
+            const touchCount = selectedActivities.filter(a => a.type === 'touch' || a.type === 'both').length;
+            
+            document.getElementById('selectionSummary').textContent = 
+                `선택된 활동: ${selectedActivities.length}개 (Tech: ${techCount}, Touch: ${touchCount})`;
+        }
+
+        // SEL 균형 업데이트
+        function updateSELBalance() {
+            Object.keys(selCounts).forEach(comp => {
+                const countElement = document.getElementById(`count-${comp}`);
+                const compElement = document.getElementById(`comp-${comp}`);
+                
+                countElement.textContent = selCounts[comp];
+                
+                if (selCounts[comp] > 0) {
+                    compElement.classList.add('active');
+                } else {
+                    compElement.classList.remove('active');
+                }
+            });
+            
+            // 균형 분석
+            const total = Object.values(selCounts).reduce((sum, count) => sum + count, 0);
+            const average = total / 5;
+            const variance = Object.values(selCounts).reduce((sum, count) => sum + Math.pow(count - average, 2), 0) / 5;
+            
+            let analysisText = '';
+            if (variance < 1) {
+                analysisText = '✅ SEL 역량이 균형적으로 분포되어 있습니다.';
+            } else if (variance < 2) {
+                analysisText = '⚠️ 일부 SEL 역량의 분포가 불균형합니다. 부족한 역량을 보완해보세요.';
+            } else {
+                analysisText = '❌ SEL 역량 분포가 매우 불균형합니다. 활동 선택을 재검토해주세요.';
+            }
+            
+            document.getElementById('balanceAnalysis').textContent = analysisText;
+        }
+
+        // 프로젝트 요약 생성
+        function generateProjectSummary() {
+            let summaryHTML = '<h3 style="color: #e74c3c; margin-bottom: 20px;">프로젝트 설계 요약</h3>';
+            
+            // 선택된 활동
+            summaryHTML += '<h4 style="color: #2c3e50; margin: 20px 0 10px 0;">선택된 활동</h4>';
+            if (selectedActivities.length > 0) {
+                selectedActivities.forEach(activity => {
+                    summaryHTML += `<div style="background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #e74c3c;">`;
+                    summaryHTML += `<strong>${activity.name}</strong> (${activity.type === 'tech' ? 'High-Tech' : activity.type === 'touch' ? 'High-Touch' : 'High-Tech & High-Touch'})<br>`;
+                    summaryHTML += `<small style="color: #7f8c8d;">${activity.description}</small>`;
+                    summaryHTML += `</div>`;
+                });
+            } else {
+                summaryHTML += '<p style="color: #7f8c8d;">선택된 활동이 없습니다.</p>';
+            }
+            
+            // 4단계 플로차트
+            summaryHTML += '<h4 style="color: #2c3e50; margin: 20px 0 10px 0;">4단계 플로차트</h4>';
+            for (let i = 1; i <= 4; i++) {
+                const activities = document.getElementById(`step${i}-activities`)?.value || '';
+                const plan = document.getElementById(`step${i}-plan`)?.value || '';
+                const stepNames = ['AIDT 사전학습', '팀 협력 활동', 'AIDT 적용', '성찰 활동'];
+                
+                summaryHTML += `<div style="background: white; padding: 15px; margin: 10px 0; border-radius: 8px;">`;
+                summaryHTML += `<strong>${i}단계: ${stepNames[i-1]}</strong><br>`;
+                if (activities) summaryHTML += `활동: ${activities}<br>`;
+                if (plan) summaryHTML += `계획: ${plan}`;
+                summaryHTML += `</div>`;
+            }
+            
+            // SEL 역량 분포
+            summaryHTML += '<h4 style="color: #2c3e50; margin: 20px 0 10px 0;">SEL 역량 분포</h4>';
+            summaryHTML += '<div style="background: white; padding: 15px; border-radius: 8px;">';
+            Object.keys(selCounts).forEach(comp => {
+                const icons = {'자기인식': '✪', '자기관리': '♢', '사회적인식': '♧', '관계기술': '♤', '책임의사결정': '★'};
+                summaryHTML += `${icons[comp]} ${comp}: ${selCounts[comp]}개<br>`;
+            });
+            summaryHTML += '</div>';
+            
+            document.getElementById('projectSummary').innerHTML = summaryHTML;
+        }
+
+        // 프로젝트 내보내기
+        function exportProject() {
+            generateProjectSummary();
+            document.getElementById('exportContent').innerHTML = document.getElementById('projectSummary').innerHTML;
+            document.getElementById('resultModal').style.display = 'block';
+        }
+
+        // 프로젝트 다운로드
+        function downloadProject() {
+            let content = 'HTHT×SEL 프로젝트 설계서\n';
+            content += '=' + '='.repeat(50) + '\n\n';
+            
+            content += '1. 선택된 활동\n';
+            content += '-'.repeat(30) + '\n';
+            selectedActivities.forEach(activity => {
+                content += `• ${activity.name} (${activity.type})\n`;
+                content += `  ${activity.description}\n\n`;
+            });
+            
+            content += '2. 4단계 플로차트\n';
+            content += '-'.repeat(30) + '\n';
+            const stepNames = ['AIDT 사전학습', '팀 협력 활동', 'AIDT 적용', '성찰 활동'];
+            for (let i = 1; i <= 4; i++) {
+                const activities = document.getElementById(`step${i}-activities`)?.value || '';
+                const plan = document.getElementById(`step${i}-plan`)?.value || '';
+                
+                content += `${i}단계: ${stepNames[i-1]}\n`;
+                if (activities) content += `활동: ${activities}\n`;
+                if (plan) content += `계획: ${plan}\n`;
+                content += '\n';
+            }
+            
+            content += '3. SEL 역량 분포\n';
+            content += '-'.repeat(30) + '\n';
+            Object.keys(selCounts).forEach(comp => {
+                content += `${comp}: ${selCounts[comp]}개\n`;
+            });
+            
+            content += `\n작성일: ${new Date().toLocaleDateString('ko-KR')}\n`;
+            
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'HTHT프로젝트설계서_' + new Date().toISOString().slice(0,10) + '.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 프로젝트 복사
+        function copyProject() {
+            const content = document.getElementById('exportContent').innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('클립보드에 복사되었습니다!');
+            });
+        }
+
+        // 전체 초기화
+        function clearAll() {
+            if (confirm('모든 설계 내용을 초기화하시겠습니까?')) {
+                selectedActivities = [];
+                selCounts = {
+                    '자기인식': 0,
+                    '자기관리': 0,
+                    '사회적인식': 0,
+                    '관계기술': 0,
+                    '책임의사결정': 0
+                };
+                
+                document.querySelectorAll('.matrix-cell.selected').forEach(cell => {
+                    cell.classList.remove('selected');
+                });
+                
+                document.querySelectorAll('.step-input').forEach(input => {
+                    input.value = '';
+                });
+                
+                updateSelectionSummary();
+                updateSELBalance();
+            }
+        }
+
+        // 프로젝트 저장
+        function saveProject() {
+            const projectData = {
+                selectedActivities,
+                selCounts,
+                flowchartData: {}
+            };
+            
+            for (let i = 1; i <= 4; i++) {
+                projectData.flowchartData[`step${i}-activities`] = document.getElementById(`step${i}-activities`)?.value || '';
+                projectData.flowchartData[`step${i}-plan`] = document.getElementById(`step${i}-plan`)?.value || '';
+            }
+            
+            localStorage.setItem('hthtProjectDesign', JSON.stringify(projectData));
+            alert('프로젝트가 임시 저장되었습니다!');
+        }
+
+        // 저장된 프로젝트 불러오기
+        function loadProject() {
+            const saved = localStorage.getItem('hthtProjectDesign');
+            if (saved) {
+                const projectData = JSON.parse(saved);
+                
+                selectedActivities = projectData.selectedActivities || [];
+                selCounts = projectData.selCounts || {
+                    '자기인식': 0,
+                    '자기관리': 0,
+                    '사회적인식': 0,
+                    '관계기술': 0,
+                    '책임의사결정': 0
+                };
+                
+                // 선택된 활동 표시
+                selectedActivities.forEach(activity => {
+                    const cells = document.querySelectorAll('.matrix-cell');
+                    cells.forEach(cell => {
+                        if (cell.querySelector('h3').textContent === activity.name) {
+                            cell.classList.add('selected');
+                        }
+                    });
+                });
+                
+                // 플로차트 데이터 복원
+                if (projectData.flowchartData) {
+                    Object.keys(projectData.flowchartData).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) {
+                            element.value = projectData.flowchartData[key];
+                        }
+                    });
+                }
+                
+                updateSelectionSummary();
+                updateSELBalance();
+            }
+        }
+
+        // 모달 닫기
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProject();
+            updateProgressIndicator();
+            
+            // 모달 외부 클릭 시 닫기
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTHT×SEL 프로젝트 수업 보조 웹앱</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .main-content {
+            padding: 60px 40px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .intro h2 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .intro p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .webapps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .webapp-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .webapp-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .webapp-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+            color: white;
+        }
+
+        .webapp-card:nth-child(1) .webapp-icon {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .webapp-card:nth-child(2) .webapp-icon {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .webapp-card:nth-child(3) .webapp-icon {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+
+        .webapp-card:nth-child(4) .webapp-icon {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+
+        .webapp-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .webapp-description {
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .webapp-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .webapp-features li {
+            padding: 8px 0;
+            color: #34495e;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .webapp-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .webapp-button {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .webapp-button:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .features-section {
+            background: #f8f9fa;
+            padding: 60px 40px;
+            margin: 0 -40px;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 50px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .feature-description {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .footer h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .footer p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 40px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .main-content {
+                padding: 40px 20px;
+            }
+            
+            .intro h2 {
+                font-size: 2rem;
+            }
+            
+            .webapps-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .features-section {
+                padding: 40px 20px;
+                margin: 0 -20px;
+            }
+            
+            .features-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HTHT×SEL 프로젝트</h1>
+            <p>AIDT 기반 High-Tech High-Touch 프로젝트와 사회정서학습(SEL)을 위한 수업 보조 웹앱 모음</p>
+        </div>
+
+        <div class="main-content">
+            <div class="intro">
+                <h2>🚀 수업 보조 웹앱</h2>
+                <p>강의 슬라이드와 함께 사용할 수 있는 인터랙티브 웹앱들입니다. 각 도구는 HTHT 프로젝트 설계와 SEL 역량 개발을 효과적으로 지원합니다.</p>
+            </div>
+
+            <div class="webapps-grid">
+                <div class="webapp-card">
+                    <div class="webapp-icon">🎯</div>
+                    <h3 class="webapp-title">문제 정의 캔버스</h3>
+                    <p class="webapp-description">학급 문제를 체계적으로 분석하고 AIDT 기반 해결 방안을 설계하세요</p>
+                    <ul class="webapp-features">
+                        <li>시각적 캔버스 형태의 문제 분석</li>
+                        <li>AIDT 도구 매핑 기능</li>
+                        <li>결과 내보내기 및 공유</li>
+                        <li>단계별 가이드 제공</li>
+                    </ul>
+                    <a href="problem-definition-canvas.html" class="webapp-button">시작하기</a>
+                </div>
+
+                <div class="webapp-card">
+                    <div class="webapp-icon">⚙️</div>
+                    <h3 class="webapp-title">HTHT 프로젝트 설계 도구</h3>
+                    <p class="webapp-description">4단계 플로차트와 SEL 역량 매핑을 통한 체계적 프로젝트 설계</p>
+                    <ul class="webapp-features">
+                        <li>HTHT 활동 매트릭스</li>
+                        <li>4단계 플로차트 설계</li>
+                        <li>SEL 균형 점검</li>
+                        <li>완성된 설계안 내보내기</li>
+                    </ul>
+                    <a href="htht-project-designer.html" class="webapp-button">시작하기</a>
+                </div>
+
+                <div class="webapp-card">
+                    <div class="webapp-icon">📊</div>
+                    <h3 class="webapp-title">SEL 역량 체크리스트</h3>
+                    <p class="webapp-description">5대 SEL 역량의 균형적 발달을 점검하고 개선 방안을 찾아보세요</p>
+                    <ul class="webapp-features">
+                        <li>5대 SEL 역량 세부 체크리스트</li>
+                        <li>진행률 시각화</li>
+                        <li>개인별 발달 현황 분석</li>
+                        <li>개선 제안 및 활동 추천</li>
+                    </ul>
+                    <a href="sel-competency-checker.html" class="webapp-button">시작하기</a>
+                </div>
+
+                <div class="webapp-card">
+                    <div class="webapp-icon">💬</div>
+                    <h3 class="webapp-title">실시간 피드백 보드</h3>
+                    <p class="webapp-description">모둠별 프로젝트에 대한 실시간 피드백을 주고받으며 함께 성장하세요</p>
+                    <ul class="webapp-features">
+                        <li>다양한 피드백 유형 지원</li>
+                        <li>SEL 역량 연계 피드백</li>
+                        <li>모둠별 필터링 및 통계</li>
+                        <li>답글 기능 및 내보내기</li>
+                    </ul>
+                    <a href="feedback-board.html" class="webapp-button">시작하기</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-section">
+            <h2 class="features-title">🎯 주요 특징</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">AIDT 역량 개발</h3>
+                    <p class="feature-description">AI 디지털 도구를 활용한 문제 해결 능력 향상</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⚖️</div>
+                    <h3 class="feature-title">HTHT 균형</h3>
+                    <p class="feature-description">High-Tech와 High-Touch 활동의 조화로운 학습 경험</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">❤️</div>
+                    <h3 class="feature-title">SEL 역량 강화</h3>
+                    <p class="feature-description">사회정서학습을 통한 전인적 성장 지원</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🤝</div>
+                    <h3 class="feature-title">협력적 학습</h3>
+                    <p class="feature-description">모둠 활동과 피드백을 통한 상호 학습 촉진</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <h3>📚 강의 교안과 함께 활용하세요</h3>
+            <p>
+                1차시: AIDT 사례 체험으로 이해하는 HTHT×SEL<br>
+                2차시: AIDT 기반 HTHT 프로젝트 설계와 SEL 균형 적용
+            </p>
+            <br>
+            <p>
+                <strong>제작:</strong> HTHT×SEL 프로젝트 팀 | 
+                <strong>업데이트:</strong> 2025년 7월 25일
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+
