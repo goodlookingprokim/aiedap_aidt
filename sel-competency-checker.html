@@ -4,1382 +4,975 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEL 역량 체크리스트 - HTHT×SEL 프로젝트</title>
+    <meta name="description" content="5대 SEL 역량의 균형적 발달을 점검하고 개선 방안을 찾는 체크리스트 도구">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="common.css">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .main-content {
+            padding: var(--spacing-xl) 0;
+            min-height: calc(100vh - 200px);
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #27ae60, #229954);
-            color: white;
-            padding: 30px;
+        .page-header {
             text-align: center;
+            margin-bottom: var(--spacing-2xl);
         }
 
-        .header h1 {
+        .page-title {
             font-size: 2.5rem;
-            margin-bottom: 10px;
             font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
         }
 
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .competency-tabs {
-            display: flex;
-            background: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .competency-tab {
-            flex: 1;
-            padding: 20px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-bottom: 3px solid transparent;
-            font-weight: 600;
-        }
-
-        .competency-tab.active {
-            background: white;
-            border-bottom-color: #27ae60;
-            color: #27ae60;
-        }
-
-        .competency-tab:hover:not(.active) {
-            background: #e9ecef;
-        }
-
-        .competency-icon {
-            font-size: 24px;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 40px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .competency-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .competency-title {
-            font-size: 2rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .competency-description {
-            font-size: 1.1rem;
-            color: #7f8c8d;
+        .page-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
             max-width: 600px;
-            margin: 0 auto;
+            margin: 0 auto var(--spacing-lg);
             line-height: 1.6;
         }
 
-        .checklist-section {
-            margin-bottom: 40px;
-        }
-
-        .section-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-icon {
-            width: 32px;
-            height: 32px;
-            background: #27ae60;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
-        }
-
-        .checklist-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .checklist-item {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 20px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .checklist-item:hover {
-            border-color: #27ae60;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.15);
-        }
-
-        .checklist-item.checked {
-            background: #d5f5e3;
-            border-color: #27ae60;
-        }
-
-        .item-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        .checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #27ae60;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            margin-top: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .checkbox.checked {
-            background: #27ae60;
-            color: white;
-        }
-
-        .item-title {
-            font-weight: 600;
-            color: #2c3e50;
-            line-height: 1.4;
-        }
-
-        .item-description {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-left: 39px;
-        }
-
-        .progress-section {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-        }
-
-        .progress-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .progress-bars {
+        /* 대시보드 스타일 */
+        .dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
         }
 
-        .progress-item {
+        .dashboard-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
             text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-normal);
         }
 
-        .progress-label {
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 10px;
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dashboard-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--bg-gradient);
+            color: var(--text-white);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            font-size: 1.5rem;
+            margin: 0 auto var(--spacing-md);
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 12px;
-            background: #e9ecef;
-            border-radius: 6px;
+        .dashboard-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .dashboard-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* SEL 역량 섹션 스타일 */
+        .competency-section {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: var(--spacing-xl);
             overflow: hidden;
-            margin-bottom: 5px;
         }
 
-        .progress-fill {
+        .competency-header {
+            background: var(--bg-gradient);
+            color: var(--text-white);
+            padding: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .competency-header:hover {
+            background: var(--primary-dark);
+        }
+
+        .competency-icon {
+            font-size: 2rem;
+            width: 60px;
+            text-align: center;
+        }
+
+        .competency-info {
+            flex: 1;
+        }
+
+        .competency-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .competency-description {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .competency-progress {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .progress-bar-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background: var(--text-white);
             height: 100%;
-            background: linear-gradient(90deg, #27ae60, #2ecc71);
-            width: 0%;
-            transition: width 0.5s ease;
-            border-radius: 6px;
+            transition: width 0.3s ease;
         }
 
         .progress-percentage {
-            font-size: 0.9rem;
-            color: #7f8c8d;
+            font-weight: 600;
+            min-width: 50px;
+            text-align: right;
         }
 
-        .overall-progress {
-            text-align: center;
-            margin-top: 30px;
+        .expand-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
         }
 
-        .overall-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: conic-gradient(#27ae60 0deg, #27ae60 0deg, #e9ecef 0deg);
+        .competency-content {
+            padding: var(--spacing-lg);
+            display: none;
+        }
+
+        .competency-content.expanded {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .competency-section.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* 체크리스트 스타일 */
+        .checklist {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            transition: var(--transition-fast);
+        }
+
+        .checklist-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .checklist-item.checked {
+            background: rgba(72, 187, 120, 0.1);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 15px;
+            transition: var(--transition-fast);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .checkbox:hover {
+            border-color: var(--primary-color);
+        }
+
+        .checkbox.checked {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: var(--text-white);
+        }
+
+        .checklist-text {
+            flex: 1;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .checklist-item.checked .checklist-text {
+            color: var(--text-secondary);
+        }
+
+        /* 분석 결과 스타일 */
+        .analysis-section {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .analysis-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .radar-chart {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto var(--spacing-lg);
             position: relative;
         }
 
-        .overall-circle::before {
-            content: '';
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: white;
-            position: absolute;
-        }
-
-        .overall-percentage {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #2c3e50;
-            z-index: 1;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            padding: 30px;
-            background: #f8f9fa;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #27ae60, #229954);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #229954, #1e8449);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
-        }
-
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #7f8c8d;
-            transform: translateY(-2px);
-        }
-
-        .btn-info {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-        }
-
-        .btn-info:hover {
-            background: linear-gradient(135deg, #2980b9, #1f5f8b);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        .radar-chart svg {
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            backdrop-filter: blur(5px);
         }
 
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            max-width: 800px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #7f8c8d;
-        }
-
-        .close-btn:hover {
-            color: #e74c3c;
+        .recommendations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
         }
 
         .recommendation-card {
-            background: #f8f9fa;
-            border-left: 4px solid #27ae60;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 8px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            border-left: 4px solid var(--primary-color);
         }
 
         .recommendation-title {
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .recommendation-content {
-            color: #7f8c8d;
-            line-height: 1.6;
-        }
-
-        @media (max-width: 768px) {
-            .competency-tabs {
-                flex-direction: column;
-            }
-            
-            .checklist-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .progress-bars {
-                grid-template-columns: 1fr;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-
-        .floating-help {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: #27ae60;
-            border-radius: 50%;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.3);
-            transition: all 0.3s ease;
+            gap: var(--spacing-xs);
         }
 
-        .floating-help:hover {
-            transform: scale(1.1);
-            background: #229954;
+        .recommendation-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        /* 액션 버튼 */
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: var(--spacing-xl);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .competency-header {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--spacing-sm);
+            }
+
+            .competency-progress {
+                width: 100%;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .radar-chart {
+                width: 250px;
+                height: 250px;
+            }
+
+            .recommendations {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 1000px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>SEL 역량 체크리스트</h1>
-            <p>5대 SEL 역량의 균형적 발달을 점검하고 개선 방안을 찾아보세요</p>
-        </div>
+    <!-- 네비게이션은 common.js에서 자동 생성됩니다 -->
 
-        <div class="competency-tabs">
-            <div class="competency-tab active" onclick="switchCompetency('self-awareness')">
-                <span class="competency-icon">✪</span>
-                자기인식
+    <main class="main-content">
+        <div class="container">
+            <!-- 페이지 헤더 -->
+            <div class="page-header">
+                <h1 class="page-title">SEL 역량 체크리스트</h1>
+                <p class="page-subtitle">
+                    5대 SEL 역량의 균형적 발달을 점검하고 개인별 성장 계획을 수립해보세요
+                </p>
             </div>
-            <div class="competency-tab" onclick="switchCompetency('self-management')">
-                <span class="competency-icon">♢</span>
-                자기관리
-            </div>
-            <div class="competency-tab" onclick="switchCompetency('social-awareness')">
-                <span class="competency-icon">♧</span>
-                사회적 인식
-            </div>
-            <div class="competency-tab" onclick="switchCompetency('relationship-skills')">
-                <span class="competency-icon">♤</span>
-                관계 기술
-            </div>
-            <div class="competency-tab" onclick="switchCompetency('responsible-decision')">
-                <span class="competency-icon">★</span>
-                책임 있는 의사결정
-            </div>
-        </div>
 
-        <!-- 자기인식 탭 -->
-        <div class="tab-content active" id="self-awareness">
-            <div class="competency-header">
-                <div class="competency-title">✪ 자기인식 (Self-Awareness)</div>
-                <div class="competency-description">
-                    자신의 감정, 생각, 가치관을 정확하게 인식하고 이해하는 능력입니다. 
-                    자신의 강점과 약점을 파악하고, 감정이 행동에 미치는 영향을 인식할 수 있습니다.
+            <!-- 대시보드 -->
+            <div class="dashboard">
+                <div class="dashboard-card">
+                    <div class="dashboard-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <span class="dashboard-number" id="totalItems">0</span>
+                    <div class="dashboard-label">총 체크 항목</div>
                 </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">🎯</div>
-                    감정 인식
+                <div class="dashboard-card">
+                    <div class="dashboard-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <span class="dashboard-number" id="completedItems">0</span>
+                    <div class="dashboard-label">완료된 항목</div>
                 </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">현재 감정 상태를 정확히 표현할 수 있다</div>
-                        </div>
-                        <div class="item-description">기쁨, 슬픔, 분노, 불안 등의 감정을 구체적인 단어로 표현하고 그 원인을 설명할 수 있습니다.</div>
+                <div class="dashboard-card">
+                    <div class="dashboard-icon">
+                        <i class="fas fa-percentage"></i>
                     </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">감정 변화의 패턴을 인식한다</div>
-                        </div>
-                        <div class="item-description">특정 상황이나 사람과의 만남에서 반복되는 감정 반응 패턴을 파악할 수 있습니다.</div>
+                    <span class="dashboard-number" id="completionRate">0%</span>
+                    <div class="dashboard-label">전체 완성률</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-icon">
+                        <i class="fas fa-star"></i>
                     </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">감정의 강도를 조절할 수 있다</div>
-                        </div>
-                        <div class="item-description">감정의 세기를 1-10 척도로 표현하고, 상황에 맞게 감정 표현의 정도를 조절할 수 있습니다.</div>
-                    </div>
+                    <span class="dashboard-number" id="balanceScore">0</span>
+                    <div class="dashboard-label">균형 점수</div>
                 </div>
             </div>
 
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">💭</div>
-                    자기 이해
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">자신의 강점과 약점을 파악한다</div>
-                        </div>
-                        <div class="item-description">학습, 관계, 활동 등 다양한 영역에서 자신이 잘하는 것과 개선이 필요한 부분을 인식합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">개인적 가치관을 명확히 한다</div>
-                        </div>
-                        <div class="item-description">자신에게 중요한 가치(정의, 친절, 성취 등)가 무엇인지 알고 이를 바탕으로 선택을 합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">자신의 학습 스타일을 안다</div>
-                        </div>
-                        <div class="item-description">시각적, 청각적, 체험적 학습 중 어떤 방식이 자신에게 효과적인지 파악하고 활용합니다.</div>
-                    </div>
-                </div>
+            <!-- SEL 역량 섹션들 -->
+            <div id="competencySections">
+                <!-- JavaScript에서 동적 생성 -->
             </div>
 
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">🔍</div>
-                    자기 성찰
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">행동의 결과를 되돌아본다</div>
-                        </div>
-                        <div class="item-description">자신의 말이나 행동이 다른 사람에게 어떤 영향을 미쳤는지 생각해봅니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">실수로부터 배움을 얻는다</div>
-                        </div>
-                        <div class="item-description">실패나 실수를 단순히 부정적으로 보지 않고, 그로부터 얻을 수 있는 교훈을 찾습니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">성장 과정을 기록한다</div>
-                        </div>
-                        <div class="item-description">일기, 포트폴리오 등을 통해 자신의 변화와 성장 과정을 기록하고 점검합니다.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 자기관리 탭 -->
-        <div class="tab-content" id="self-management">
-            <div class="competency-header">
-                <div class="competency-title">♢ 자기관리 (Self-Management)</div>
-                <div class="competency-description">
-                    목표를 설정하고 달성하기 위해 자신의 감정, 생각, 행동을 효과적으로 조절하는 능력입니다. 
-                    충동을 조절하고, 스트레스를 관리하며, 동기를 유지할 수 있습니다.
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">🎯</div>
-                    목표 설정 및 달성
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-management">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">구체적이고 달성 가능한 목표를 설정한다</div>
-                        </div>
-                        <div class="item-description">SMART 기준(구체적, 측정가능, 달성가능, 관련성, 시한성)에 따라 목표를 설정합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-management">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">계획을 세우고 단계별로 실행한다</div>
-                        </div>
-                        <div class="item-description">큰 목표를 작은 단위로 나누어 체계적으로 접근하고 실행합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-management">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">진행 상황을 점검하고 조정한다</div>
-                        </div>
-                        <div class="item-description">정기적으로 목표 달성 정도를 확인하고 필요시 계획을 수정합니다.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">⚖️</div>
-                    감정 조절
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-management">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">화가 날 때 진정하는 방법을 안다</div>
-                        </div>
-                        <div class="item-description">심호흡, 잠시 멈춤, 다른 활동 등을 통해 분노를 조절할 수 있습니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-management">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">스트레스를 건강하게 해소한다</div>
-                        </div>
-                        <div class="item-description">운동, 취미, 휴식 등을 통해 스트레스를 효과적으로 관리합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-management">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">충동적인 행동을 자제한다</div>
-                        </div>
-                        <div class="item-description">즉흥적인 결정을 내리기 전에 잠시 생각하고 결과를 고려합니다.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">⏰</div>
-                    시간 관리
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-management">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">우선순위를 정하여 일을 처리한다</div>
-                        </div>
-                        <div class="item-description">중요도와 긴급도를 고려하여 해야 할 일의 순서를 정합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-management">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">시간을 효율적으로 활용한다</div>
-                        </div>
-                        <div class="item-description">시간표나 일정표를 활용하여 시간을 체계적으로 관리합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="self-management">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">마감일을 지킨다</div>
-                        </div>
-                        <div class="item-description">과제나 약속의 마감일을 준수하고, 미리 준비하는 습관을 가집니다.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 사회적 인식 탭 -->
-        <div class="tab-content" id="social-awareness">
-            <div class="competency-header">
-                <div class="competency-title">♧ 사회적 인식 (Social Awareness)</div>
-                <div class="competency-description">
-                    다른 사람의 감정과 관점을 이해하고 공감하는 능력입니다. 
-                    사회적 상황을 정확히 파악하고, 다양성을 존중하며, 도움이 필요한 사람을 인식할 수 있습니다.
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">❤️</div>
-                    공감 능력
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="social-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">다른 사람의 감정을 읽을 수 있다</div>
-                        </div>
-                        <div class="item-description">표정, 몸짓, 말투 등을 통해 상대방의 감정 상태를 파악할 수 있습니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="social-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">타인의 입장에서 생각해본다</div>
-                        </div>
-                        <div class="item-description">상대방의 상황과 관점을 고려하여 그들의 행동이나 반응을 이해하려고 노력합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="social-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">어려움에 처한 사람을 알아차린다</div>
-                        </div>
-                        <div class="item-description">도움이 필요한 친구나 동료를 민감하게 인식하고 관심을 표현합니다.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">🌍</div>
-                    다양성 인식
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="social-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">문화적 차이를 존중한다</div>
-                        </div>
-                        <div class="item-description">다른 문화, 종교, 배경을 가진 사람들의 관점과 행동을 이해하고 존중합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="social-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">편견 없이 사람을 대한다</div>
-                        </div>
-                        <div class="item-description">외모, 성별, 나이 등에 대한 선입견을 갖지 않고 개인의 특성을 인정합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="social-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">소수 의견을 경청한다</div>
-                        </div>
-                        <div class="item-description">다수와 다른 의견이라도 귀 기울여 듣고 그 가치를 인정합니다.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">👥</div>
-                    사회적 상황 파악
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="social-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">그룹 내 분위기를 파악한다</div>
-                        </div>
-                        <div class="item-description">학급이나 모둠의 전체적인 분위기와 역학 관계를 이해합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="social-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">상황에 맞는 행동을 한다</div>
-                        </div>
-                        <div class="item-description">공식적인 자리와 비공식적인 자리를 구분하여 적절한 태도를 보입니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="social-awareness">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">사회적 규범을 이해한다</div>
-                        </div>
-                        <div class="item-description">학교, 가정, 사회에서 지켜야 할 규칙과 예의를 알고 실천합니다.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 관계 기술 탭 -->
-        <div class="tab-content" id="relationship-skills">
-            <div class="competency-header">
-                <div class="competency-title">♤ 관계 기술 (Relationship Skills)</div>
-                <div class="competency-description">
-                    다양한 사람들과 건강하고 긍정적인 관계를 형성하고 유지하는 능력입니다. 
-                    효과적으로 의사소통하고, 협력하며, 갈등을 건설적으로 해결할 수 있습니다.
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">💬</div>
-                    의사소통
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="relationship-skills">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">명확하게 의사를 표현한다</div>
-                        </div>
-                        <div class="item-description">자신의 생각과 감정을 상대방이 이해할 수 있도록 분명하게 전달합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="relationship-skills">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">적극적으로 경청한다</div>
-                        </div>
-                        <div class="item-description">상대방의 말을 끝까지 듣고, 이해했는지 확인하며, 적절한 반응을 보입니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="relationship-skills">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">비언어적 소통을 활용한다</div>
-                        </div>
-                        <div class="item-description">표정, 몸짓, 목소리 톤 등을 통해 효과적으로 의사를 전달합니다.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">🤝</div>
-                    협력
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="relationship-skills">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">팀워크를 발휘한다</div>
-                        </div>
-                        <div class="item-description">공동 목표를 위해 다른 사람들과 효과적으로 협력합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="relationship-skills">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">역할을 분담하고 책임진다</div>
-                        </div>
-                        <div class="item-description">그룹 활동에서 자신의 역할을 이해하고 성실히 수행합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="relationship-skills">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">타협과 조정을 한다</div>
-                        </div>
-                        <div class="item-description">의견이 다를 때 서로의 입장을 고려하여 합의점을 찾습니다.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">🔧</div>
-                    갈등 해결
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="relationship-skills">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">갈등을 건설적으로 해결한다</div>
-                        </div>
-                        <div class="item-description">문제의 원인을 파악하고 상호 이익이 되는 해결책을 찾습니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="relationship-skills">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">중재자 역할을 한다</div>
-                        </div>
-                        <div class="item-description">다른 사람들 간의 갈등을 공정하게 중재하고 해결을 돕습니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="relationship-skills">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">사과와 용서를 한다</div>
-                        </div>
-                        <div class="item-description">잘못했을 때 진심으로 사과하고, 상대방의 실수를 용서할 수 있습니다.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 책임 있는 의사결정 탭 -->
-        <div class="tab-content" id="responsible-decision">
-            <div class="competency-header">
-                <div class="competency-title">★ 책임 있는 의사결정 (Responsible Decision-Making)</div>
-                <div class="competency-description">
-                    윤리적 기준과 안전 규범을 고려하여 건설적인 선택을 하는 능력입니다. 
-                    다양한 요소를 종합적으로 고려하고, 결과에 대해 책임을 질 수 있습니다.
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">🤔</div>
-                    의사결정 과정
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="responsible-decision">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">문제를 명확히 파악한다</div>
-                        </div>
-                        <div class="item-description">결정해야 할 문제나 상황을 정확하게 이해하고 정의합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="responsible-decision">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">다양한 대안을 고려한다</div>
-                        </div>
-                        <div class="item-description">여러 가지 선택지를 생각해보고 각각의 장단점을 비교합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="responsible-decision">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">결과를 예측하고 평가한다</div>
-                        </div>
-                        <div class="item-description">각 선택이 가져올 결과를 미리 생각해보고 최선의 결정을 내립니다.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">⚖️</div>
-                    윤리적 판단
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="responsible-decision">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">옳고 그름을 판단한다</div>
-                        </div>
-                        <div class="item-description">도덕적, 윤리적 기준에 따라 행동의 적절성을 평가합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="responsible-decision">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">타인에게 미치는 영향을 고려한다</div>
-                        </div>
-                        <div class="item-description">자신의 결정이 다른 사람들에게 어떤 영향을 줄지 생각합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="responsible-decision">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">공정성을 추구한다</div>
-                        </div>
-                        <div class="item-description">모든 사람을 공평하게 대하고 편견 없는 결정을 내리려고 노력합니다.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="checklist-section">
-                <div class="section-title">
-                    <div class="section-icon">🛡️</div>
-                    책임감
-                </div>
-                <div class="checklist-grid">
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="responsible-decision">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">결정에 대해 책임진다</div>
-                        </div>
-                        <div class="item-description">자신이 내린 결정의 결과를 받아들이고 책임을 집니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="responsible-decision">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">안전을 우선시한다</div>
-                        </div>
-                        <div class="item-description">자신과 타인의 안전을 최우선으로 고려하여 결정합니다.</div>
-                    </div>
-
-                    <div class="checklist-item" onclick="toggleCheck(this)" data-competency="responsible-decision">
-                        <div class="item-header">
-                            <div class="checkbox"></div>
-                            <div class="item-title">도움을 요청할 줄 안다</div>
-                        </div>
-                        <div class="item-description">혼자 결정하기 어려운 상황에서 적절한 조언을 구합니다.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 진행률 섹션 -->
-        <div class="progress-section">
-            <div class="progress-title">SEL 역량 발달 현황</div>
-            <div class="progress-bars">
-                <div class="progress-item">
-                    <div class="progress-label">
-                        <span>✪</span> 자기인식
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-self-awareness"></div>
-                    </div>
-                    <div class="progress-percentage" id="percent-self-awareness">0%</div>
-                </div>
-
-                <div class="progress-item">
-                    <div class="progress-label">
-                        <span>♢</span> 자기관리
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-self-management"></div>
-                    </div>
-                    <div class="progress-percentage" id="percent-self-management">0%</div>
-                </div>
-
-                <div class="progress-item">
-                    <div class="progress-label">
-                        <span>♧</span> 사회적 인식
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-social-awareness"></div>
-                    </div>
-                    <div class="progress-percentage" id="percent-social-awareness">0%</div>
-                </div>
-
-                <div class="progress-item">
-                    <div class="progress-label">
-                        <span>♤</span> 관계 기술
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-relationship-skills"></div>
-                    </div>
-                    <div class="progress-percentage" id="percent-relationship-skills">0%</div>
-                </div>
-
-                <div class="progress-item">
-                    <div class="progress-label">
-                        <span>★</span> 책임 있는 의사결정
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-responsible-decision"></div>
-                    </div>
-                    <div class="progress-percentage" id="percent-responsible-decision">0%</div>
-                </div>
-            </div>
-
-            <div class="overall-progress">
-                <div class="overall-circle" id="overallCircle">
-                    <div class="overall-percentage" id="overallPercentage">0%</div>
-                </div>
-                <div style="font-weight: 600; color: #2c3e50;">전체 SEL 역량 발달도</div>
-            </div>
-        </div>
-
-        <div class="action-buttons">
-            <button class="btn btn-secondary" onclick="resetAll()">전체 초기화</button>
-            <button class="btn btn-primary" onclick="saveProgress()">진행률 저장</button>
-            <button class="btn btn-info" onclick="showRecommendations()">개선 제안 보기</button>
-        </div>
-    </div>
-
-    <div class="floating-help" onclick="showHelp()">?</div>
-
-    <!-- 개선 제안 모달 -->
-    <div class="modal" id="recommendationModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal()">&times;</button>
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h2 style="color: #27ae60;">SEL 역량 개선 제안</h2>
-                <p style="color: #7f8c8d;">현재 체크리스트 결과를 바탕으로 한 맞춤형 개선 방안</p>
-            </div>
-            <div id="recommendationContent">
-                <!-- 개선 제안 내용이 여기에 표시됩니다 -->
-            </div>
-        </div>
-    </div>
-
-    <!-- 도움말 모달 -->
-    <div class="modal" id="helpModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal()">&times;</button>
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h2 style="color: #27ae60;">SEL 역량 체크리스트 사용 가이드</h2>
-                <p style="color: #7f8c8d;">효과적인 SEL 역량 점검을 위한 안내</p>
-            </div>
-            <div style="text-align: left;">
-                <h3 style="color: #2c3e50; margin: 20px 0 10px 0;">사용 방법</h3>
-                <p>1. 각 역량 탭을 클릭하여 해당 영역의 체크리스트를 확인하세요.</p>
-                <p>2. 현재 자신의 상태와 일치하는 항목을 클릭하여 체크하세요.</p>
-                <p>3. 모든 영역을 점검한 후 진행률을 확인하세요.</p>
-                <p>4. '개선 제안 보기'를 통해 맞춤형 발달 방안을 확인하세요.</p>
+            <!-- 분석 결과 섹션 -->
+            <div class="analysis-section">
+                <h2 class="analysis-title">📊 SEL 역량 분석 결과</h2>
                 
-                <h3 style="color: #2c3e50; margin: 20px 0 10px 0;">체크 기준</h3>
-                <p>• <strong>완전히 할 수 있음:</strong> 항상 또는 거의 항상 해당 행동을 보임</p>
-                <p>• <strong>부분적으로 할 수 있음:</strong> 가끔 또는 상황에 따라 해당 행동을 보임</p>
-                <p>• <strong>아직 어려움:</strong> 거의 하지 못하거나 전혀 하지 못함</p>
-                
-                <h3 style="color: #2c3e50; margin: 20px 0 10px 0;">활용 팁</h3>
-                <p>• 정기적으로 체크리스트를 점검하여 성장 과정을 추적하세요.</p>
-                <p>• 부족한 영역에 대해서는 구체적인 실천 계획을 세우세요.</p>
-                <p>• 교사나 부모와 함께 결과를 공유하고 피드백을 받으세요.</p>
+                <div class="radar-chart" id="radarChart">
+                    <!-- SVG 차트가 여기에 생성됩니다 -->
+                </div>
+
+                <div class="recommendations" id="recommendations">
+                    <!-- 추천 사항이 여기에 생성됩니다 -->
+                </div>
+            </div>
+
+            <!-- 액션 버튼 -->
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="resetChecklist()">
+                    <i class="fas fa-undo"></i>
+                    초기화
+                </button>
+                <button class="btn btn-outline" onclick="saveProgress()">
+                    <i class="fas fa-save"></i>
+                    진행상황 저장
+                </button>
+                <button class="btn btn-outline" onclick="loadProgress()">
+                    <i class="fas fa-folder-open"></i>
+                    불러오기
+                </button>
+                <button class="btn btn-primary" onclick="exportReport()">
+                    <i class="fas fa-file-alt"></i>
+                    리포트 생성
+                </button>
             </div>
         </div>
-    </div>
+    </main>
 
+    <!-- JavaScript -->
+    <script src="common.js"></script>
     <script>
-        let checklistData = {
-            'self-awareness': [],
-            'self-management': [],
-            'social-awareness': [],
-            'relationship-skills': [],
-            'responsible-decision': []
-        };
-
-        let currentCompetency = 'self-awareness';
-
-        // 역량 탭 전환
-        function switchCompetency(competency) {
-            // 모든 탭 비활성화
-            document.querySelectorAll('.competency-tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            // 선택된 탭 활성화
-            document.querySelector(`[onclick="switchCompetency('${competency}')"]`).classList.add('active');
-            document.getElementById(competency).classList.add('active');
-            
-            currentCompetency = competency;
-        }
-
-        // 체크박스 토글
-        function toggleCheck(item) {
-            const checkbox = item.querySelector('.checkbox');
-            const competency = item.dataset.competency;
-            const itemTitle = item.querySelector('.item-title').textContent;
-            
-            if (checkbox.classList.contains('checked')) {
-                // 체크 해제
-                checkbox.classList.remove('checked');
-                checkbox.innerHTML = '';
-                item.classList.remove('checked');
-                
-                // 데이터에서 제거
-                checklistData[competency] = checklistData[competency].filter(title => title !== itemTitle);
-            } else {
-                // 체크
-                checkbox.classList.add('checked');
-                checkbox.innerHTML = '✓';
-                item.classList.add('checked');
-                
-                // 데이터에 추가
-                if (!checklistData[competency].includes(itemTitle)) {
-                    checklistData[competency].push(itemTitle);
-                }
-            }
-            
-            updateProgress();
-        }
-
-        // 진행률 업데이트
-        function updateProgress() {
-            const competencies = ['self-awareness', 'self-management', 'social-awareness', 'relationship-skills', 'responsible-decision'];
-            const totalItems = {
-                'self-awareness': 9,
-                'self-management': 9,
-                'social-awareness': 9,
-                'relationship-skills': 9,
-                'responsible-decision': 9
-            };
-            
-            let totalChecked = 0;
-            let totalPossible = 0;
-            
-            competencies.forEach(comp => {
-                const checkedCount = checklistData[comp].length;
-                const totalCount = totalItems[comp];
-                const percentage = Math.round((checkedCount / totalCount) * 100);
-                
-                // 개별 진행률 업데이트
-                document.getElementById(`progress-${comp}`).style.width = percentage + '%';
-                document.getElementById(`percent-${comp}`).textContent = percentage + '%';
-                
-                totalChecked += checkedCount;
-                totalPossible += totalCount;
-            });
-            
-            // 전체 진행률 업데이트
-            const overallPercentage = Math.round((totalChecked / totalPossible) * 100);
-            document.getElementById('overallPercentage').textContent = overallPercentage + '%';
-            
-            // 원형 진행률 업데이트
-            const circle = document.getElementById('overallCircle');
-            const degrees = (overallPercentage / 100) * 360;
-            circle.style.background = `conic-gradient(#27ae60 0deg, #27ae60 ${degrees}deg, #e9ecef ${degrees}deg)`;
-        }
-
-        // 전체 초기화
-        function resetAll() {
-            if (confirm('모든 체크 내용을 초기화하시겠습니까?')) {
-                checklistData = {
-                    'self-awareness': [],
-                    'self-management': [],
-                    'social-awareness': [],
-                    'relationship-skills': [],
-                    'responsible-decision': []
+        class SELCompetencyChecker {
+            constructor() {
+                this.competencies = {
+                    selfAwareness: {
+                        icon: '✪',
+                        title: '자기인식',
+                        description: '자신의 감정, 생각, 가치관을 이해하고 인식하는 능력',
+                        items: [
+                            '나는 내 감정을 정확히 파악할 수 있다',
+                            '나는 내 강점과 약점을 알고 있다',
+                            '나는 내 가치관이 무엇인지 명확히 안다',
+                            '나는 스트레스를 받을 때 그 원인을 파악할 수 있다',
+                            '나는 내 행동이 다른 사람에게 미치는 영향을 안다',
+                            '나는 내 목표와 꿈이 무엇인지 알고 있다',
+                            '나는 내 학습 스타일을 이해하고 있다',
+                            '나는 어려운 상황에서 내 반응을 객관적으로 관찰할 수 있다'
+                        ]
+                    },
+                    selfManagement: {
+                        icon: '♢',
+                        title: '자기관리',
+                        description: '감정과 행동을 효과적으로 조절하고 목표를 달성하는 능력',
+                        items: [
+                            '나는 화가 날 때 감정을 조절할 수 있다',
+                            '나는 계획을 세우고 그대로 실행할 수 있다',
+                            '나는 유혹에 빠지지 않고 목표에 집중할 수 있다',
+                            '나는 스트레스를 건강한 방법으로 해소한다',
+                            '나는 실패했을 때 다시 일어설 수 있다',
+                            '나는 시간을 효율적으로 관리한다',
+                            '나는 충동적인 행동을 자제할 수 있다',
+                            '나는 어려운 과제도 끝까지 완수한다'
+                        ]
+                    },
+                    socialAwareness: {
+                        icon: '♧',
+                        title: '사회적 인식',
+                        description: '다른 사람의 감정과 관점을 이해하고 공감하는 능력',
+                        items: [
+                            '나는 다른 사람의 감정을 잘 파악할 수 있다',
+                            '나는 다른 사람의 입장에서 생각할 수 있다',
+                            '나는 비언어적 신호(표정, 몸짓)를 잘 읽는다',
+                            '나는 다양한 문화와 배경을 가진 사람들을 존중한다',
+                            '나는 집단 내 분위기를 잘 파악한다',
+                            '나는 다른 사람이 도움이 필요할 때 알아차린다',
+                            '나는 사회적 규범과 기대를 이해한다',
+                            '나는 불공정한 상황을 인식하고 대응할 수 있다'
+                        ]
+                    },
+                    relationshipSkills: {
+                        icon: '♤',
+                        title: '관계 기술',
+                        description: '건강한 관계를 형성하고 유지하며 갈등을 해결하는 능력',
+                        items: [
+                            '나는 다른 사람과 쉽게 대화를 시작할 수 있다',
+                            '나는 팀워크를 발휘하여 협력할 수 있다',
+                            '나는 갈등 상황을 평화롭게 해결할 수 있다',
+                            '나는 다른 사람의 의견을 경청한다',
+                            '나는 도움이 필요할 때 요청할 수 있다',
+                            '나는 다른 사람에게 도움을 제공한다',
+                            '나는 건설적인 피드백을 주고받을 수 있다',
+                            '나는 다양한 사람들과 친밀한 관계를 맺는다'
+                        ]
+                    },
+                    responsibleDecision: {
+                        icon: '★',
+                        title: '책임 있는 의사결정',
+                        description: '윤리적이고 건설적인 선택을 하며 그 결과에 책임지는 능력',
+                        items: [
+                            '나는 결정을 내리기 전에 충분히 생각한다',
+                            '나는 내 행동의 결과를 예측할 수 있다',
+                            '나는 옳고 그름을 구별할 수 있다',
+                            '나는 어려운 상황에서도 올바른 선택을 한다',
+                            '나는 내 결정에 대해 책임을 진다',
+                            '나는 다른 사람의 복지를 고려하여 결정한다',
+                            '나는 장기적 관점에서 판단한다',
+                            '나는 실수를 인정하고 개선하려고 노력한다'
+                        ]
+                    }
                 };
-                
-                // 모든 체크박스 초기화
-                document.querySelectorAll('.checklist-item').forEach(item => {
-                    const checkbox = item.querySelector('.checkbox');
-                    checkbox.classList.remove('checked');
-                    checkbox.innerHTML = '';
-                    item.classList.remove('checked');
-                });
-                
-                updateProgress();
+
+                this.checkedItems = {};
+                this.init();
             }
-        }
 
-        // 진행률 저장
-        function saveProgress() {
-            localStorage.setItem('selChecklistData', JSON.stringify(checklistData));
-            alert('진행률이 저장되었습니다!');
-        }
+            init() {
+                this.loadFromStorage();
+                this.createCompetencySections();
+                this.updateDashboard();
+                this.updateAnalysis();
+                this.bindEvents();
+            }
 
-        // 저장된 진행률 불러오기
-        function loadProgress() {
-            const saved = localStorage.getItem('selChecklistData');
-            if (saved) {
-                checklistData = JSON.parse(saved);
-                
-                // 체크박스 상태 복원
-                Object.keys(checklistData).forEach(competency => {
-                    checklistData[competency].forEach(itemTitle => {
-                        const items = document.querySelectorAll(`[data-competency="${competency}"] .checklist-item`);
-                        items.forEach(item => {
-                            if (item.querySelector('.item-title').textContent === itemTitle) {
-                                const checkbox = item.querySelector('.checkbox');
-                                checkbox.classList.add('checked');
-                                checkbox.innerHTML = '✓';
-                                item.classList.add('checked');
-                            }
-                        });
+            createCompetencySections() {
+                const container = document.getElementById('competencySections');
+                container.innerHTML = '';
+
+                Object.keys(this.competencies).forEach(key => {
+                    const competency = this.competencies[key];
+                    const section = document.createElement('div');
+                    section.className = 'competency-section';
+                    section.innerHTML = `
+                        <div class="competency-header" onclick="toggleSection('${key}')">
+                            <div class="competency-icon">${competency.icon}</div>
+                            <div class="competency-info">
+                                <div class="competency-title">${competency.title}</div>
+                                <div class="competency-description">${competency.description}</div>
+                            </div>
+                            <div class="competency-progress">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="progress-${key}"></div>
+                                </div>
+                                <div class="progress-percentage" id="percentage-${key}">0%</div>
+                            </div>
+                            <div class="expand-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="competency-content" id="content-${key}">
+                            <div class="checklist">
+                                ${competency.items.map((item, index) => `
+                                    <div class="checklist-item" id="item-${key}-${index}">
+                                        <div class="checkbox" onclick="toggleItem('${key}', ${index})">
+                                            <i class="fas fa-check" style="display: none;"></i>
+                                        </div>
+                                        <div class="checklist-text">${item}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(section);
+                });
+
+                this.updateCheckboxes();
+            }
+
+            updateCheckboxes() {
+                Object.keys(this.competencies).forEach(key => {
+                    const competency = this.competencies[key];
+                    competency.items.forEach((item, index) => {
+                        const itemElement = document.getElementById(`item-${key}-${index}`);
+                        const checkbox = itemElement.querySelector('.checkbox');
+                        const checkIcon = checkbox.querySelector('i');
+                        
+                        if (this.checkedItems[`${key}-${index}`]) {
+                            itemElement.classList.add('checked');
+                            checkbox.classList.add('checked');
+                            checkIcon.style.display = 'block';
+                        } else {
+                            itemElement.classList.remove('checked');
+                            checkbox.classList.remove('checked');
+                            checkIcon.style.display = 'none';
+                        }
                     });
                 });
+            }
+
+            toggleItem(competencyKey, itemIndex) {
+                const itemId = `${competencyKey}-${itemIndex}`;
+                this.checkedItems[itemId] = !this.checkedItems[itemId];
                 
-                updateProgress();
+                this.updateCheckboxes();
+                this.updateDashboard();
+                this.updateAnalysis();
+                this.autoSave();
+            }
+
+            updateDashboard() {
+                const totalItems = Object.keys(this.competencies).reduce((sum, key) => 
+                    sum + this.competencies[key].items.length, 0);
+                
+                const completedItems = Object.values(this.checkedItems).filter(Boolean).length;
+                const completionRate = Math.round((completedItems / totalItems) * 100);
+                
+                // 각 역량별 진행률 계산
+                const competencyScores = {};
+                Object.keys(this.competencies).forEach(key => {
+                    const competency = this.competencies[key];
+                    const checkedCount = competency.items.filter((item, index) => 
+                        this.checkedItems[`${key}-${index}`]).length;
+                    const score = Math.round((checkedCount / competency.items.length) * 100);
+                    competencyScores[key] = score;
+                    
+                    // 진행률 바 업데이트
+                    const progressBar = document.getElementById(`progress-${key}`);
+                    const percentage = document.getElementById(`percentage-${key}`);
+                    if (progressBar && percentage) {
+                        progressBar.style.width = score + '%';
+                        percentage.textContent = score + '%';
+                    }
+                });
+
+                // 균형 점수 계산 (표준편차 기반)
+                const scores = Object.values(competencyScores);
+                const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
+                const variance = scores.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / scores.length;
+                const standardDeviation = Math.sqrt(variance);
+                const balanceScore = Math.max(0, Math.round(100 - standardDeviation));
+
+                // 대시보드 업데이트
+                document.getElementById('totalItems').textContent = totalItems;
+                document.getElementById('completedItems').textContent = completedItems;
+                document.getElementById('completionRate').textContent = completionRate + '%';
+                document.getElementById('balanceScore').textContent = balanceScore;
+            }
+
+            updateAnalysis() {
+                this.createRadarChart();
+                this.generateRecommendations();
+            }
+
+            createRadarChart() {
+                const container = document.getElementById('radarChart');
+                const size = 300;
+                const center = size / 2;
+                const radius = 100;
+
+                // 각 역량별 점수 계산
+                const scores = {};
+                Object.keys(this.competencies).forEach(key => {
+                    const competency = this.competencies[key];
+                    const checkedCount = competency.items.filter((item, index) => 
+                        this.checkedItems[`${key}-${index}`]).length;
+                    scores[key] = (checkedCount / competency.items.length) * 100;
+                });
+
+                const competencyKeys = Object.keys(this.competencies);
+                const angleStep = (2 * Math.PI) / competencyKeys.length;
+
+                let svg = `
+                    <svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 배경 원들 -->
+                        <circle cx="${center}" cy="${center}" r="${radius * 0.2}" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                        <circle cx="${center}" cy="${center}" r="${radius * 0.4}" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                        <circle cx="${center}" cy="${center}" r="${radius * 0.6}" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                        <circle cx="${center}" cy="${center}" r="${radius * 0.8}" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                        <circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="#e2e8f0" stroke-width="2"/>
+                `;
+
+                // 축 그리기
+                competencyKeys.forEach((key, index) => {
+                    const angle = index * angleStep - Math.PI / 2;
+                    const x = center + Math.cos(angle) * radius;
+                    const y = center + Math.sin(angle) * radius;
+                    
+                    svg += `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" stroke="#cbd5e0" stroke-width="1"/>`;
+                    
+                    // 라벨 추가
+                    const labelX = center + Math.cos(angle) * (radius + 20);
+                    const labelY = center + Math.sin(angle) * (radius + 20);
+                    const competency = this.competencies[key];
+                    
+                    svg += `<text x="${labelX}" y="${labelY}" text-anchor="middle" dominant-baseline="middle" 
+                            font-size="12" fill="#4a5568" font-weight="600">
+                            ${competency.icon} ${competency.title}
+                            </text>`;
+                });
+
+                // 데이터 폴리곤 그리기
+                let pathData = '';
+                competencyKeys.forEach((key, index) => {
+                    const angle = index * angleStep - Math.PI / 2;
+                    const score = scores[key] || 0;
+                    const distance = (score / 100) * radius;
+                    const x = center + Math.cos(angle) * distance;
+                    const y = center + Math.sin(angle) * distance;
+                    
+                    if (index === 0) {
+                        pathData += `M ${x} ${y}`;
+                    } else {
+                        pathData += ` L ${x} ${y}`;
+                    }
+                });
+                pathData += ' Z';
+
+                svg += `<path d="${pathData}" fill="rgba(102, 126, 234, 0.3)" stroke="#667eea" stroke-width="2"/>`;
+
+                // 데이터 포인트 그리기
+                competencyKeys.forEach((key, index) => {
+                    const angle = index * angleStep - Math.PI / 2;
+                    const score = scores[key] || 0;
+                    const distance = (score / 100) * radius;
+                    const x = center + Math.cos(angle) * distance;
+                    const y = center + Math.sin(angle) * distance;
+                    
+                    svg += `<circle cx="${x}" cy="${y}" r="4" fill="#667eea" stroke="#ffffff" stroke-width="2"/>`;
+                });
+
+                svg += '</svg>';
+                container.innerHTML = svg;
+            }
+
+            generateRecommendations() {
+                const container = document.getElementById('recommendations');
+                const recommendations = [];
+
+                // 각 역량별 점수 계산
+                Object.keys(this.competencies).forEach(key => {
+                    const competency = this.competencies[key];
+                    const checkedCount = competency.items.filter((item, index) => 
+                        this.checkedItems[`${key}-${index}`]).length;
+                    const score = (checkedCount / competency.items.length) * 100;
+
+                    if (score < 50) {
+                        recommendations.push({
+                            icon: competency.icon,
+                            title: `${competency.title} 역량 강화 필요`,
+                            text: this.getRecommendationText(key, score)
+                        });
+                    } else if (score >= 80) {
+                        recommendations.push({
+                            icon: '🌟',
+                            title: `${competency.title} 역량 우수`,
+                            text: `${competency.title} 역량이 잘 발달되어 있습니다. 이 강점을 활용하여 다른 역량도 함께 발전시켜보세요.`
+                        });
+                    }
+                });
+
+                if (recommendations.length === 0) {
+                    recommendations.push({
+                        icon: '🎯',
+                        title: '균형잡힌 발달',
+                        text: '모든 SEL 역량이 균형있게 발달하고 있습니다. 지속적인 성장을 위해 꾸준히 노력해주세요.'
+                    });
+                }
+
+                container.innerHTML = recommendations.map(rec => `
+                    <div class="recommendation-card">
+                        <div class="recommendation-title">
+                            ${rec.icon} ${rec.title}
+                        </div>
+                        <div class="recommendation-text">${rec.text}</div>
+                    </div>
+                `).join('');
+            }
+
+            getRecommendationText(competencyKey, score) {
+                const texts = {
+                    selfAwareness: '자기 성찰 일기 쓰기, 감정 인식 연습, 마음챙김 명상을 통해 자기인식 능력을 향상시켜보세요.',
+                    selfManagement: '목표 설정과 계획 수립, 감정 조절 기법 연습, 스트레스 관리 방법을 익혀보세요.',
+                    socialAwareness: '다양한 사람들과 대화하기, 타인의 감정 관찰하기, 문화적 다양성에 대해 학습해보세요.',
+                    relationshipSkills: '적극적 경청 연습, 협력 활동 참여, 갈등 해결 기법을 학습해보세요.',
+                    responsibleDecision: '윤리적 딜레마 토론 참여, 의사결정 과정 체계화, 결과에 대한 책임감 기르기를 실천해보세요.'
+                };
+                return texts[competencyKey] || '해당 역량 향상을 위한 활동에 참여해보세요.';
+            }
+
+            bindEvents() {
+                // 자동 저장 (30초마다)
+                setInterval(() => {
+                    this.autoSave();
+                }, 30000);
+            }
+
+            autoSave() {
+                HTHT.StorageManager.save('selChecklist', this.checkedItems);
+            }
+
+            saveProgress() {
+                HTHT.StorageManager.save('selChecklist', this.checkedItems);
+                HTHT.Toast.show('진행상황이 저장되었습니다.', 'success');
+            }
+
+            loadProgress() {
+                const savedData = HTHT.StorageManager.load('selChecklist');
+                if (savedData) {
+                    this.checkedItems = savedData;
+                    this.updateCheckboxes();
+                    this.updateDashboard();
+                    this.updateAnalysis();
+                    HTHT.Toast.show('저장된 진행상황을 불러왔습니다.', 'success');
+                } else {
+                    HTHT.Toast.show('저장된 데이터가 없습니다.', 'info');
+                }
+            }
+
+            loadFromStorage() {
+                const savedData = HTHT.StorageManager.load('selChecklist');
+                if (savedData) {
+                    this.checkedItems = savedData;
+                }
+            }
+
+            resetChecklist() {
+                if (confirm('모든 체크 항목을 초기화하시겠습니까?')) {
+                    this.checkedItems = {};
+                    this.updateCheckboxes();
+                    this.updateDashboard();
+                    this.updateAnalysis();
+                    HTHT.Toast.show('체크리스트가 초기화되었습니다.', 'info');
+                }
+            }
+
+            exportReport() {
+                const exportData = {
+                    title: 'SEL 역량 체크리스트 리포트',
+                    timestamp: new Date().toISOString(),
+                    checkedItems: this.checkedItems,
+                    analysis: this.generateAnalysisData()
+                };
+
+                // JSON 파일로 내보내기
+                HTHT.ExportManager.downloadJSON(exportData, `SEL역량리포트_${new Date().toISOString().split('T')[0]}`);
+
+                // 텍스트 리포트 생성
+                const report = this.generateTextReport();
+                HTHT.ExportManager.downloadText(report, `SEL역량분석_${new Date().toISOString().split('T')[0]}`);
+
+                HTHT.Toast.show('리포트가 성공적으로 생성되었습니다.', 'success');
+            }
+
+            generateAnalysisData() {
+                const totalItems = Object.keys(this.competencies).reduce((sum, key) => 
+                    sum + this.competencies[key].items.length, 0);
+                const completedItems = Object.values(this.checkedItems).filter(Boolean).length;
+                
+                const competencyScores = {};
+                Object.keys(this.competencies).forEach(key => {
+                    const competency = this.competencies[key];
+                    const checkedCount = competency.items.filter((item, index) => 
+                        this.checkedItems[`${key}-${index}`]).length;
+                    competencyScores[key] = Math.round((checkedCount / competency.items.length) * 100);
+                });
+
+                return {
+                    totalItems,
+                    completedItems,
+                    completionRate: Math.round((completedItems / totalItems) * 100),
+                    competencyScores,
+                    balanceScore: parseInt(document.getElementById('balanceScore').textContent)
+                };
+            }
+
+            generateTextReport() {
+                const analysis = this.generateAnalysisData();
+                
+                let report = `
+# SEL 역량 체크리스트 리포트
+
+생성일시: ${new Date().toLocaleString('ko-KR')}
+
+## 전체 현황
+- 총 체크 항목: ${analysis.totalItems}개
+- 완료된 항목: ${analysis.completedItems}개
+- 전체 완성률: ${analysis.completionRate}%
+- 균형 점수: ${analysis.balanceScore}/100
+
+## 역량별 상세 분석
+
+`;
+
+                Object.keys(this.competencies).forEach(key => {
+                    const competency = this.competencies[key];
+                    const score = analysis.competencyScores[key];
+                    
+                    report += `### ${competency.icon} ${competency.title} (${score}%)\n`;
+                    report += `${competency.description}\n\n`;
+                    
+                    report += '**완료된 항목:**\n';
+                    competency.items.forEach((item, index) => {
+                        if (this.checkedItems[`${key}-${index}`]) {
+                            report += `- ✅ ${item}\n`;
+                        }
+                    });
+                    
+                    report += '\n**미완료 항목:**\n';
+                    competency.items.forEach((item, index) => {
+                        if (!this.checkedItems[`${key}-${index}`]) {
+                            report += `- ⭕ ${item}\n`;
+                        }
+                    });
+                    
+                    report += '\n';
+                });
+
+                report += `
+## 개선 제안
+
+${this.generateImprovementSuggestions().map(suggestion => `- ${suggestion}`).join('\n')}
+
+---
+HTHT×SEL 프로젝트 - SEL 역량 체크리스트
+                `.trim();
+
+                return report;
+            }
+
+            generateImprovementSuggestions() {
+                const analysis = this.generateAnalysisData();
+                const suggestions = [];
+
+                Object.keys(analysis.competencyScores).forEach(key => {
+                    const score = analysis.competencyScores[key];
+                    const competency = this.competencies[key];
+                    
+                    if (score < 50) {
+                        suggestions.push(`${competency.title} 역량 강화를 위한 집중적인 활동 필요`);
+                    }
+                });
+
+                if (analysis.balanceScore < 70) {
+                    suggestions.push('역량 간 균형 발전을 위한 종합적 접근 필요');
+                }
+
+                if (suggestions.length === 0) {
+                    suggestions.push('현재 SEL 역량이 균형있게 발달하고 있습니다. 지속적인 성장을 위해 꾸준한 노력을 계속해주세요.');
+                }
+
+                return suggestions;
             }
         }
 
-        // 개선 제안 보기
-        function showRecommendations() {
-            const recommendations = generateRecommendations();
-            document.getElementById('recommendationContent').innerHTML = recommendations;
-            document.getElementById('recommendationModal').style.display = 'block';
+        // 전역 함수들
+        function toggleSection(competencyKey) {
+            const section = document.querySelector(`#content-${competencyKey}`).closest('.competency-section');
+            const content = document.getElementById(`content-${competencyKey}`);
+            
+            section.classList.toggle('expanded');
+            content.classList.toggle('expanded');
         }
 
-        // 개선 제안 생성
-        function generateRecommendations() {
-            const competencies = {
-                'self-awareness': { name: '자기인식', icon: '✪' },
-                'self-management': { name: '자기관리', icon: '♢' },
-                'social-awareness': { name: '사회적 인식', icon: '♧' },
-                'relationship-skills': { name: '관계 기술', icon: '♤' },
-                'responsible-decision': { name: '책임 있는 의사결정', icon: '★' }
-            };
-            
-            const totalItems = 9; // 각 역량당 항목 수
-            let recommendationsHTML = '';
-            
-            Object.keys(competencies).forEach(comp => {
-                const checkedCount = checklistData[comp].length;
-                const percentage = Math.round((checkedCount / totalItems) * 100);
-                const compInfo = competencies[comp];
-                
-                let level = '';
-                let suggestions = [];
-                
-                if (percentage >= 80) {
-                    level = '우수';
-                    suggestions = [
-                        `${compInfo.name} 역량이 매우 잘 발달되어 있습니다.`,
-                        '다른 친구들을 도와주는 멘토 역할을 해보세요.',
-                        '더 도전적인 상황에서도 이 역량을 발휘해보세요.'
-                    ];
-                } else if (percentage >= 60) {
-                    level = '양호';
-                    suggestions = [
-                        `${compInfo.name} 역량이 어느 정도 발달되어 있습니다.`,
-                        '부족한 부분을 파악하여 집중적으로 연습해보세요.',
-                        '일상생활에서 더 자주 실천해보세요.'
-                    ];
-                } else if (percentage >= 40) {
-                    level = '보통';
-                    suggestions = [
-                        `${compInfo.name} 역량 개발이 필요합니다.`,
-                        '관련 활동에 적극적으로 참여해보세요.',
-                        '교사나 부모님께 도움을 요청해보세요.'
-                    ];
-                } else {
-                    level = '개선 필요';
-                    suggestions = [
-                        `${compInfo.name} 역량을 집중적으로 개발해야 합니다.`,
-                        '작은 목표부터 시작하여 단계적으로 연습해보세요.',
-                        '관련 책이나 자료를 찾아 학습해보세요.'
-                    ];
-                }
-                
-                recommendationsHTML += `
-                    <div class="recommendation-card">
-                        <div class="recommendation-title">
-                            ${compInfo.icon} ${compInfo.name} (${percentage}% - ${level})
-                        </div>
-                        <div class="recommendation-content">
-                            ${suggestions.map(s => `• ${s}`).join('<br>')}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            // 전체적인 제안 추가
-            const totalChecked = Object.values(checklistData).reduce((sum, arr) => sum + arr.length, 0);
-            const overallPercentage = Math.round((totalChecked / 45) * 100);
-            
-            recommendationsHTML += `
-                <div class="recommendation-card" style="border-left-color: #3498db;">
-                    <div class="recommendation-title">
-                        🎯 전체적인 개선 방향 (${overallPercentage}%)
-                    </div>
-                    <div class="recommendation-content">
-                        ${overallPercentage >= 70 ? 
-                            '• SEL 역량이 전반적으로 잘 발달되어 있습니다.<br>• 지속적인 실천을 통해 더욱 발전시켜 나가세요.<br>• 다른 사람들과 경험을 나누며 함께 성장해보세요.' :
-                            overallPercentage >= 50 ?
-                            '• SEL 역량이 고르게 발달하고 있습니다.<br>• 부족한 영역을 파악하여 집중적으로 개선해보세요.<br>• 일상생활에서 의식적으로 실천해보세요.' :
-                            '• SEL 역량 개발을 위한 체계적인 노력이 필요합니다.<br>• 하나씩 차근차근 연습해나가세요.<br>• 주변의 도움을 적극적으로 요청하세요.'
-                        }
-                    </div>
-                </div>
-            `;
-            
-            return recommendationsHTML;
+        function toggleItem(competencyKey, itemIndex) {
+            window.selChecker.toggleItem(competencyKey, itemIndex);
         }
 
-        // 도움말 보기
-        function showHelp() {
-            document.getElementById('helpModal').style.display = 'block';
+        function resetChecklist() {
+            window.selChecker.resetChecklist();
         }
 
-        // 모달 닫기
-        function closeModal() {
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.style.display = 'none';
-            });
+        function saveProgress() {
+            window.selChecker.saveProgress();
         }
 
-        // 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            loadProgress();
-            
-            // 모달 외부 클릭 시 닫기
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        closeModal();
-                    }
-                });
-            });
+        function loadProgress() {
+            window.selChecker.loadProgress();
+        }
+
+        function exportReport() {
+            window.selChecker.exportReport();
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            window.selChecker = new SELCompetencyChecker();
         });
     </script>
 </body>

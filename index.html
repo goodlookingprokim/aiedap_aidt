@@ -4,95 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTHT×SEL 프로젝트 수업 보조 웹앱</title>
+    <meta name="description" content="AIDT 기반 High-Tech High-Touch 프로젝트와 사회정서학습(SEL)을 위한 수업 보조 웹앱 모음">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="common.css">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        /* 메인 페이지 전용 스타일 */
+        .hero-section {
+            background: var(--bg-gradient);
+            color: var(--text-white);
+            padding: var(--spacing-2xl) 0;
+            text-align: center;
+            position: relative;
             overflow: hidden;
         }
 
-        .header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 60px 40px;
-            text-align: center;
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
         }
 
-        .header h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .header p {
-            font-size: 1.3rem;
-            opacity: 0.9;
+        .hero-content {
+            position: relative;
+            z-index: 1;
             max-width: 800px;
             margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            font-weight: 400;
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.9;
             line-height: 1.6;
         }
 
-        .main-content {
-            padding: 60px 40px;
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+            flex-wrap: wrap;
         }
 
-        .intro {
+        .hero-stat {
             text-align: center;
-            margin-bottom: 60px;
         }
 
-        .intro h2 {
+        .hero-stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .hero-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .features-section {
+            padding: var(--spacing-2xl) 0;
+            background: var(--bg-primary);
+        }
+
+        .section-title {
+            text-align: center;
             font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
         }
 
-        .intro p {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            max-width: 700px;
-            margin: 0 auto;
-            line-height: 1.8;
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-2xl);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .webapps-grid {
+        .webapp-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
         }
 
         .webapp-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            border: 1px solid #e9ecef;
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transition: var(--transition-normal);
+            position: relative;
+            border: 1px solid rgba(102, 126, 234, 0.1);
         }
 
         .webapp-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-color);
         }
 
-        .webapp-icon {
+        .webapp-card-icon {
             width: 80px;
             height: 80px;
             border-radius: 50%;
@@ -100,288 +132,522 @@
             align-items: center;
             justify-content: center;
             font-size: 2rem;
-            margin: 0 auto 20px;
-            color: white;
+            color: var(--text-white);
+            margin: 0 auto var(--spacing-lg);
+            position: relative;
+            overflow: hidden;
         }
 
-        .webapp-card:nth-child(1) .webapp-icon {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+        .webapp-card-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-gradient);
+            border-radius: 50%;
+            z-index: -1;
         }
 
-        .webapp-card:nth-child(2) .webapp-icon {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }
-
-        .webapp-card:nth-child(3) .webapp-icon {
-            background: linear-gradient(135deg, #27ae60, #229954);
-        }
-
-        .webapp-card:nth-child(4) .webapp-icon {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-        }
-
-        .webapp-title {
+        .webapp-card-title {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 15px;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
             text-align: center;
         }
 
-        .webapp-description {
-            color: #7f8c8d;
+        .webapp-card-description {
+            color: var(--text-secondary);
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: var(--spacing-lg);
             text-align: center;
         }
 
-        .webapp-features {
+        .webapp-card-features {
             list-style: none;
-            margin-bottom: 25px;
+            margin-bottom: var(--spacing-lg);
         }
 
-        .webapp-features li {
-            padding: 8px 0;
-            color: #34495e;
-            position: relative;
-            padding-left: 20px;
+        .webapp-card-features li {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
-        .webapp-features li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #27ae60;
-            font-weight: bold;
+        .webapp-card-features li i {
+            color: var(--success-color);
+            width: 16px;
         }
 
-        .webapp-button {
-            display: block;
-            width: 100%;
-            padding: 15px 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
+        .webapp-card-footer {
             text-align: center;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        .webapp-button:hover {
-            background: linear-gradient(135deg, #764ba2, #667eea);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        .benefits-section {
+            padding: var(--spacing-2xl) 0;
+            background: var(--bg-secondary);
         }
 
-        .features-section {
-            background: #f8f9fa;
-            padding: 60px 40px;
-            margin: 0 -40px;
-        }
-
-        .features-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 50px;
-        }
-
-        .features-grid {
+        .benefits-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
+            gap: var(--spacing-xl);
         }
 
-        .feature-item {
+        .benefit-item {
             text-align: center;
-            padding: 30px 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: var(--spacing-xl);
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-normal);
         }
 
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
+        .benefit-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
         }
 
-        .feature-title {
-            font-size: 1.3rem;
+        .benefit-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--bg-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-lg);
+            font-size: 1.5rem;
+            color: var(--text-white);
+        }
+
+        .benefit-title {
+            font-size: 1.25rem;
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 15px;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
         }
 
-        .feature-description {
-            color: #7f8c8d;
+        .benefit-description {
+            color: var(--text-secondary);
             line-height: 1.6;
+        }
+
+        .cta-section {
+            padding: var(--spacing-2xl) 0;
+            background: var(--bg-gradient);
+            color: var(--text-white);
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .cta-description {
+            font-size: 1.125rem;
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-white {
+            background: var(--bg-primary);
+            color: var(--primary-color);
+            border: 2px solid var(--bg-primary);
+        }
+
+        .btn-white:hover {
+            background: transparent;
+            color: var(--text-white);
+            border-color: var(--text-white);
         }
 
         .footer {
-            background: #2c3e50;
-            color: white;
-            padding: 40px;
+            background: var(--text-primary);
+            color: var(--text-white);
+            padding: var(--spacing-xl) 0;
             text-align: center;
         }
 
-        .footer h3 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
         }
 
-        .footer p {
+        .footer-links {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-white);
+            text-decoration: none;
             opacity: 0.8;
-            line-height: 1.6;
+            transition: var(--transition-fast);
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
         }
 
         @media (max-width: 768px) {
-            .header {
-                padding: 40px 20px;
-            }
-            
-            .header h1 {
+            .hero-title {
                 font-size: 2rem;
             }
-            
-            .header p {
-                font-size: 1.1rem;
+
+            .hero-subtitle {
+                font-size: 1rem;
             }
-            
-            .main-content {
-                padding: 40px 20px;
+
+            .hero-stats {
+                gap: var(--spacing-md);
             }
-            
-            .intro h2 {
+
+            .section-title {
                 font-size: 2rem;
             }
-            
-            .webapps-grid {
+
+            .webapp-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
             }
-            
-            .features-section {
-                padding: 40px 20px;
-                margin: 0 -20px;
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
             }
-            
-            .features-title {
-                font-size: 2rem;
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>HTHT×SEL 프로젝트</h1>
-            <p>AIDT 기반 High-Tech High-Touch 프로젝트와 사회정서학습(SEL)을 위한 수업 보조 웹앱 모음</p>
-        </div>
+    <!-- 네비게이션은 common.js에서 자동 생성됩니다 -->
 
-        <div class="main-content">
-            <div class="intro">
-                <h2>🚀 수업 보조 웹앱</h2>
-                <p>강의 슬라이드와 함께 사용할 수 있는 인터랙티브 웹앱들입니다. 각 도구는 HTHT 프로젝트 설계와 SEL 역량 개발을 효과적으로 지원합니다.</p>
-            </div>
-
-            <div class="webapps-grid">
-                <div class="webapp-card">
-                    <div class="webapp-icon">🎯</div>
-                    <h3 class="webapp-title">문제 정의 캔버스</h3>
-                    <p class="webapp-description">학급 문제를 체계적으로 분석하고 AIDT 기반 해결 방안을 설계하세요</p>
-                    <ul class="webapp-features">
-                        <li>시각적 캔버스 형태의 문제 분석</li>
-                        <li>AIDT 도구 매핑 기능</li>
-                        <li>결과 내보내기 및 공유</li>
-                        <li>단계별 가이드 제공</li>
-                    </ul>
-                    <a href="problem-definition-canvas.html" class="webapp-button">시작하기</a>
+    <!-- 히어로 섹션 -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">HTHT×SEL 프로젝트</h1>
+            <p class="hero-subtitle">
+                AIDT 기반 High-Tech High-Touch 프로젝트와 사회정서학습(SEL)을 위한<br>
+                혁신적인 수업 보조 웹앱 모음
+            </p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-number" data-count="4">0</span>
+                    <span class="hero-stat-label">웹앱 도구</span>
                 </div>
-
-                <div class="webapp-card">
-                    <div class="webapp-icon">⚙️</div>
-                    <h3 class="webapp-title">HTHT 프로젝트 설계 도구</h3>
-                    <p class="webapp-description">4단계 플로차트와 SEL 역량 매핑을 통한 체계적 프로젝트 설계</p>
-                    <ul class="webapp-features">
-                        <li>HTHT 활동 매트릭스</li>
-                        <li>4단계 플로차트 설계</li>
-                        <li>SEL 균형 점검</li>
-                        <li>완성된 설계안 내보내기</li>
-                    </ul>
-                    <a href="htht-project-designer.html" class="webapp-button">시작하기</a>
+                <div class="hero-stat">
+                    <span class="hero-stat-number" data-count="5">0</span>
+                    <span class="hero-stat-label">SEL 역량</span>
                 </div>
-
-                <div class="webapp-card">
-                    <div class="webapp-icon">📊</div>
-                    <h3 class="webapp-title">SEL 역량 체크리스트</h3>
-                    <p class="webapp-description">5대 SEL 역량의 균형적 발달을 점검하고 개선 방안을 찾아보세요</p>
-                    <ul class="webapp-features">
-                        <li>5대 SEL 역량 세부 체크리스트</li>
-                        <li>진행률 시각화</li>
-                        <li>개인별 발달 현황 분석</li>
-                        <li>개선 제안 및 활동 추천</li>
-                    </ul>
-                    <a href="sel-competency-checker.html" class="webapp-button">시작하기</a>
-                </div>
-
-                <div class="webapp-card">
-                    <div class="webapp-icon">💬</div>
-                    <h3 class="webapp-title">실시간 피드백 보드</h3>
-                    <p class="webapp-description">모둠별 프로젝트에 대한 실시간 피드백을 주고받으며 함께 성장하세요</p>
-                    <ul class="webapp-features">
-                        <li>다양한 피드백 유형 지원</li>
-                        <li>SEL 역량 연계 피드백</li>
-                        <li>모둠별 필터링 및 통계</li>
-                        <li>답글 기능 및 내보내기</li>
-                    </ul>
-                    <a href="feedback-board.html" class="webapp-button">시작하기</a>
+                <div class="hero-stat">
+                    <span class="hero-stat-number" data-count="2">0</span>
+                    <span class="hero-stat-label">강의 차시</span>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="features-section">
-            <h2 class="features-title">🎯 주요 특징</h2>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon">🤖</div>
-                    <h3 class="feature-title">AIDT 역량 개발</h3>
-                    <p class="feature-description">AI 디지털 도구를 활용한 문제 해결 능력 향상</p>
+    <!-- 웹앱 소개 섹션 -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">🚀 수업 보조 웹앱</h2>
+            <p class="section-subtitle">
+                강의 슬라이드와 함께 사용할 수 있는 인터랙티브 웹앱들입니다.<br>
+                각 도구는 HTHT 프로젝트 설계와 SEL 역량 개발을 효과적으로 지원합니다.
+            </p>
+
+            <div class="webapp-grid">
+                <div class="webapp-card">
+                    <div class="card-body">
+                        <div class="webapp-card-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3 class="webapp-card-title">문제 정의 캔버스</h3>
+                        <p class="webapp-card-description">
+                            학급 문제를 체계적으로 분석하고 AIDT 기반 해결 방안을 설계하세요
+                        </p>
+                        <ul class="webapp-card-features">
+                            <li><i class="fas fa-check"></i> 시각적 캔버스 형태의 문제 분석</li>
+                            <li><i class="fas fa-check"></i> AIDT 도구 매핑 기능</li>
+                            <li><i class="fas fa-check"></i> 결과 내보내기 및 공유</li>
+                            <li><i class="fas fa-check"></i> 단계별 가이드 제공</li>
+                        </ul>
+                        <div class="webapp-card-footer">
+                            <a href="problem-definition-canvas.html" class="btn btn-primary">시작하기</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon">⚖️</div>
-                    <h3 class="feature-title">HTHT 균형</h3>
-                    <p class="feature-description">High-Tech와 High-Touch 활동의 조화로운 학습 경험</p>
+
+                <div class="webapp-card">
+                    <div class="card-body">
+                        <div class="webapp-card-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3 class="webapp-card-title">HTHT 프로젝트 설계 도구</h3>
+                        <p class="webapp-card-description">
+                            4단계 플로차트와 SEL 역량 매핑을 통한 체계적 프로젝트 설계
+                        </p>
+                        <ul class="webapp-card-features">
+                            <li><i class="fas fa-check"></i> HTHT 활동 매트릭스</li>
+                            <li><i class="fas fa-check"></i> 4단계 플로차트 설계</li>
+                            <li><i class="fas fa-check"></i> SEL 균형 점검</li>
+                            <li><i class="fas fa-check"></i> 완성된 설계안 내보내기</li>
+                        </ul>
+                        <div class="webapp-card-footer">
+                            <a href="htht-project-designer.html" class="btn btn-primary">시작하기</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon">❤️</div>
-                    <h3 class="feature-title">SEL 역량 강화</h3>
-                    <p class="feature-description">사회정서학습을 통한 전인적 성장 지원</p>
+
+                <div class="webapp-card">
+                    <div class="card-body">
+                        <div class="webapp-card-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3 class="webapp-card-title">SEL 역량 체크리스트</h3>
+                        <p class="webapp-card-description">
+                            5대 SEL 역량의 균형적 발달을 점검하고 개선 방안을 찾아보세요
+                        </p>
+                        <ul class="webapp-card-features">
+                            <li><i class="fas fa-check"></i> 5대 SEL 역량 세부 체크리스트</li>
+                            <li><i class="fas fa-check"></i> 진행률 시각화</li>
+                            <li><i class="fas fa-check"></i> 개인별 발달 현황 분석</li>
+                            <li><i class="fas fa-check"></i> 개선 제안 및 활동 추천</li>
+                        </ul>
+                        <div class="webapp-card-footer">
+                            <a href="sel-competency-checker.html" class="btn btn-primary">시작하기</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🤝</div>
-                    <h3 class="feature-title">협력적 학습</h3>
-                    <p class="feature-description">모둠 활동과 피드백을 통한 상호 학습 촉진</p>
+
+                <div class="webapp-card">
+                    <div class="card-body">
+                        <div class="webapp-card-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3 class="webapp-card-title">실시간 피드백 보드</h3>
+                        <p class="webapp-card-description">
+                            모둠별 프로젝트에 대한 실시간 피드백을 주고받으며 함께 성장하세요
+                        </p>
+                        <ul class="webapp-card-features">
+                            <li><i class="fas fa-check"></i> 다양한 피드백 유형 지원</li>
+                            <li><i class="fas fa-check"></i> SEL 역량 연계 피드백</li>
+                            <li><i class="fas fa-check"></i> 모둠별 필터링 및 통계</li>
+                            <li><i class="fas fa-check"></i> 답글 기능 및 내보내기</li>
+                        </ul>
+                        <div class="webapp-card-footer">
+                            <a href="feedback-board.html" class="btn btn-primary">시작하기</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="footer">
-            <h3>📚 강의 교안과 함께 활용하세요</h3>
-            <p>
+    <!-- 주요 특징 섹션 -->
+    <section class="benefits-section">
+        <div class="container">
+            <h2 class="section-title">🎯 주요 특징</h2>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="benefit-title">AIDT 역량 개발</h3>
+                    <p class="benefit-description">
+                        AI 디지털 도구를 활용한 문제 해결 능력 향상
+                    </p>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3 class="benefit-title">HTHT 균형</h3>
+                    <p class="benefit-description">
+                        High-Tech와 High-Touch 활동의 조화로운 학습 경험
+                    </p>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="benefit-title">SEL 역량 강화</h3>
+                    <p class="benefit-description">
+                        사회정서학습을 통한 전인적 성장 지원
+                    </p>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="benefit-title">협력적 학습</h3>
+                    <p class="benefit-description">
+                        모둠 활동과 피드백을 통한 상호 학습 촉진
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA 섹션 -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">📚 강의 교안과 함께 활용하세요</h2>
+            <p class="cta-description">
                 1차시: AIDT 사례 체험으로 이해하는 HTHT×SEL<br>
                 2차시: AIDT 기반 HTHT 프로젝트 설계와 SEL 균형 적용
             </p>
-            <br>
-            <p>
-                <strong>제작:</strong> HTHT×SEL 프로젝트 팀 | 
-                <strong>업데이트:</strong> 2025년 7월 25일
-            </p>
+            <div class="cta-buttons">
+                <a href="problem-definition-canvas.html" class="btn btn-white btn-lg">
+                    <i class="fas fa-play"></i>
+                    지금 시작하기
+                </a>
+                <a href="https://github.com/goodlookingprokim/aiedap_aidt" class="btn btn-outline btn-lg" target="_blank">
+                    <i class="fab fa-github"></i>
+                    GitHub에서 보기
+                </a>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <strong>제작:</strong> HTHT×SEL 프로젝트 팀 | <strong>업데이트:</strong> 2025년 7월 26일
+                </div>
+                <div class="footer-links">
+                    <a href="#" onclick="HTHT.Toast.show('문의사항이 있으시면 GitHub Issues를 이용해 주세요.', 'info')">문의하기</a>
+                    <a href="https://github.com/goodlookingprokim/aiedap_aidt" target="_blank">GitHub</a>
+                    <a href="#" onclick="showPrivacyInfo()">개인정보 처리방침</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="common.js"></script>
+    <script>
+        // 페이지 로드 시 카운터 애니메이션
+        document.addEventListener('DOMContentLoaded', () => {
+            const counters = document.querySelectorAll('[data-count]');
+            
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = parseInt(counter.getAttribute('data-count'));
+                        HTHT.AnimationUtils.countUp(counter, target, 2000);
+                        observer.unobserve(counter);
+                    }
+                });
+            }, observerOptions);
+
+            counters.forEach(counter => observer.observe(counter));
+
+            // 카드 호버 효과
+            const cards = document.querySelectorAll('.webapp-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('fade-in');
+            });
+        });
+
+        // 개인정보 처리방침 모달
+        function showPrivacyInfo() {
+            const modal = document.createElement('div');
+            modal.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 10000;
+                    backdrop-filter: blur(5px);
+                " onclick="this.remove()">
+                    <div style="
+                        background: white;
+                        padding: 2rem;
+                        border-radius: 1rem;
+                        max-width: 500px;
+                        margin: 1rem;
+                        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+                    " onclick="event.stopPropagation()">
+                        <h3 style="margin-bottom: 1rem; color: #2d3748;">개인정보 처리방침</h3>
+                        <p style="color: #4a5568; line-height: 1.6; margin-bottom: 1rem;">
+                            본 웹앱은 모든 데이터를 사용자의 브라우저 로컬 스토리지에 저장합니다. 
+                            어떠한 개인정보도 외부 서버로 전송되지 않으며, 사용자가 직접 관리할 수 있습니다.
+                        </p>
+                        <p style="color: #4a5568; line-height: 1.6; margin-bottom: 1.5rem;">
+                            데이터 삭제를 원하시면 브라우저 설정에서 로컬 스토리지를 삭제하거나 
+                            각 웹앱의 설정 메뉴를 이용해 주세요.
+                        </p>
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="
+                                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                    color: white;
+                                    border: none;
+                                    padding: 0.5rem 1rem;
+                                    border-radius: 0.5rem;
+                                    cursor: pointer;
+                                    font-weight: 500;
+                                ">
+                            확인
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // 페이지 성능 최적화
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // 서비스 워커는 실제 배포 시에만 등록
+                console.log('Service Worker 지원됨');
+            });
+        }
+    </script>
 </body>
 </html>
 
